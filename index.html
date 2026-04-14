@@ -1,364 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sales Forecasting System</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0b0f1e;--card:#141c2e;--border:#1e2d45;--accent:#00e5ff;--red:#ff4f6d;--green:#7cfc00;--muted:#556070;--text:#dde6f0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;-webkit-tap-highlight-color:transparent}
-.page{max-width:860px;margin:0 auto;padding:14px 12px 60px}
-h1{font-size:18px;color:var(--accent);font-family:monospace}
-.sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
-.badge{display:inline-flex;align-items:center;gap:5px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.3);color:var(--accent);font-family:monospace;font-size:10px;padding:3px 9px;border-radius:4px;margin-top:7px}
-.dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:bl 1.2s infinite}
-@keyframes bl{0%,100%{opacity:1}50%{opacity:.1}}
-.pipe{display:flex;overflow-x:auto;margin:14px 0}
-.ps{flex:0 0 auto;min-width:65px;background:var(--card);border:1px solid var(--border);border-right:none;padding:7px 4px;text-align:center}
-.ps:first-child{border-radius:6px 0 0 6px}.ps:last-child{border-right:1px solid var(--border);border-radius:0 6px 6px 0}
-.ps.done{background:rgba(124,252,0,.04)}.ps.act{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.5)}
-.pi{font-size:15px}.pn{font-size:9px;color:var(--muted);font-family:monospace;margin-top:2px}.pl{font-size:10px;font-weight:600;margin-top:1px}
-.ctrls{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:14px}
-.cg{display:flex;flex-direction:column;gap:3px}
-.cg label{font-size:9px;color:var(--muted);font-family:monospace;text-transform:uppercase;letter-spacing:.06em}
-select{background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 26px 10px 9px;border-radius:6px;font-size:13px;outline:none;min-height:44px;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23556070'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
-.nw{display:flex;align-items:center;gap:7px}
-input[type=range]{width:90px;accent-color:var(--accent)}
-.nv{font-family:monospace;font-size:13px;color:var(--accent);min-width:22px}
-#RUN{min-height:50px;min-width:160px;background:var(--accent);color:#000;border:none;border-radius:6px;font-family:monospace;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
-#RUN:active{opacity:.8}
-.spi{display:none;width:13px;height:13px;border:2px solid rgba(0,0,0,.25);border-top-color:#000;border-radius:50%;animation:spin .5s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-@media(min-width:480px){.metrics{grid-template-columns:repeat(3,1fr)}}
-@media(min-width:720px){.metrics{grid-template-columns:repeat(5,1fr)}}
-.mc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 10px}
-.mc .ml{font-size:9px;font-family:monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
-.mc .mv{font-size:20px;font-family:monospace;font-weight:700;line-height:1}
-.mc .ms{font-size:11px;color:var(--muted);margin-top:3px}
-.ca{color:var(--accent)}.cr{color:var(--red)}.cg2{color:var(--green)}
-.bt{display:none;margin-top:4px;background:rgba(124,252,0,.12);border:1px solid rgba(124,252,0,.35);color:var(--green);font-family:monospace;font-size:9px;padding:2px 5px;border-radius:3px}
-.panel{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 10px 10px;margin-bottom:10px}
-.ptitle{font-family:monospace;font-size:10px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.tn{color:var(--accent)}
-.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:7px}
-.leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
-.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-/* SVG charts fill their container */
-.svgbox{width:100%;overflow:hidden}
-.svgbox svg{display:block;width:100%;height:auto}
-.g2{display:grid;grid-template-columns:1fr;gap:10px}
-@media(min-width:600px){.g2{grid-template-columns:1fr 1fr}}
-.fr{display:flex;align-items:center;gap:7px;margin-bottom:6px}
-.fn{font-family:monospace;font-size:10px;color:var(--muted);width:85px;flex-shrink:0;text-align:right}
-.fb{flex:1;background:rgba(255,255,255,.05);border-radius:2px;height:8px;overflow:hidden}
-.fbi{height:100%;border-radius:2px;background:linear-gradient(90deg,#7cfc00,rgba(124,252,0,.3))}
-.fv{font-family:monospace;font-size:10px;color:var(--green);width:32px;text-align:right}
-.logbox{background:#060d1a;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:monospace;font-size:11px;line-height:1.9;color:#4ade80;max-height:140px;overflow-y:auto;margin-top:10px}
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#080d14;--panel:#0d1520;--card:#111c2a;--card2:#0f1a28;
+  --border:#1a2a3a;--border2:#1f3348;
+  --cyan:#00e5ff;--cyan2:#00b4cc;--cyan-dim:rgba(0,229,255,.12);
+  --green:#00ff88;--green-dim:rgba(0,255,136,.1);
+  --red:#ff4d6d;--red-dim:rgba(255,77,109,.1);
+  --orange:#ffaa00;--orange-dim:rgba(255,170,0,.1);
+  --purple:#a855f7;--text:#c8d8e8;--muted:#4a6580;--light:#8aa8c0;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(180deg,#0a1628 0%,var(--bg) 100%);
+  padding:20px 16px 16px;border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.header::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+.header-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.header-icon{font-size:22px;margin-top:2px;}
+.header-title{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;
+              color:var(--cyan);letter-spacing:-0.5px;line-height:1.2;}
+.header-sub{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.3px;}
+.live-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green-dim);border:1px solid rgba(0,255,136,.3);
+  color:var(--green);padding:5px 12px;border-radius:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  letter-spacing:.8px;margin-top:10px;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);
+          animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+
+/* ── TAB BAR ── */
+.tabs{display:flex;gap:0;overflow-x:auto;padding:12px 16px 0;
+      scrollbar-width:none;border-bottom:1px solid var(--border);}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  display:flex;flex-direction:column;align-items:center;min-width:68px;
+  padding:8px 6px 10px;cursor:pointer;position:relative;
+  border-bottom:2px solid transparent;transition:all .2s;flex-shrink:0;
+}
+.tab.active{border-bottom-color:var(--cyan);}
+.tab-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;}
+.tab-icon{font-size:18px;margin-bottom:3px;}
+.tab-label{font-size:9px;color:var(--muted);text-align:center;letter-spacing:.2px;}
+.tab.active .tab-label{color:var(--cyan);}
+.tab.active .tab-num{color:var(--cyan);}
+.tab.done .tab-icon::after{content:'';display:block;width:6px;height:6px;
+  border-radius:50%;background:var(--green);position:absolute;top:6px;right:8px;}
+
+/* ── CONTROLS ── */
+.controls{padding:14px 16px;border-bottom:1px solid var(--border);
+          display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+.ctrl-group{display:flex;flex-direction:column;gap:4px;}
+.ctrl-label{font-family:'JetBrains Mono',monospace;font-size:9px;
+            color:var(--muted);letter-spacing:.6px;text-transform:uppercase;}
+.ctrl-select{
+  background:var(--card);border:1px solid var(--border2);color:var(--text);
+  padding:7px 28px 7px 10px;border-radius:7px;font-size:12px;
+  font-family:'DM Sans',sans-serif;cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a6580' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;
+}
+.ctrl-range{width:90px;accent-color:var(--cyan);}
+.ctrl-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);margin-left:4px;}
+.run-btn{
+  background:var(--cyan);color:#000;padding:10px 20px;border:none;border-radius:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;gap:7px;
+  transition:all .15s;margin-left:auto;
+}
+.run-btn:hover{background:#33eeff;transform:translateY(-1px);}
+.run-btn:active{transform:scale(.97);}
+.run-btn.running{background:var(--orange);color:#000;}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;}
+.stat-card.highlight{border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.05);}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);
+          letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px;}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;
+          color:var(--cyan);line-height:1;}
+.stat-val.red{color:var(--red);}
+.stat-val.green{color:var(--green);}
+.stat-val.orange{color:var(--orange);}
+.stat-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+
+/* ── SECTION ── */
+.section{padding:0 16px 16px;}
+.sec-title{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  color:var(--cyan);letter-spacing:.8px;text-transform:uppercase;
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.sec-num{background:var(--cyan);color:#000;padding:1px 7px;border-radius:4px;font-size:9px;}
+
+/* ── CANVAS CHARTS ── */
+.chart-card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:10px;
+}
+.chart-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--light);
+             margin-bottom:10px;letter-spacing:.3px;}
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+.legend-line{width:16px;height:2px;border-radius:2px;}
+canvas{width:100%;border-radius:6px;}
+
+/* ── MODEL COMPARISON BARS ── */
+.model-bars{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.model-row{display:flex;flex-direction:column;gap:3px;}
+.model-name{font-size:11px;color:var(--text);display:flex;justify-content:space-between;}
+.model-name span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);}
+.bar-track{background:rgba(255,255,255,.06);border-radius:4px;height:10px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1);}
+
+/* ── FEAT IMPORTANCE ── */
+.feat-rows{display:flex;flex-direction:column;gap:7px;margin-top:4px;}
+.feat-row{display:flex;align-items:center;gap:8px;}
+.feat-name{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);
+           min-width:52px;text-align:right;}
+.feat-track{flex:1;background:rgba(255,255,255,.06);border-radius:3px;height:12px;overflow:hidden;}
+.feat-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cyan2),var(--cyan));}
+.feat-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);min-width:34px;}
+
+/* ── TAB PANELS ── */
+.panel{display:none;animation:fadeIn .25s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── INFO CARDS ── */
+.info-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;
+           padding:13px;margin-bottom:9px;}
+.info-card h4{font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:7px;}
+.info-card p{font-size:12px;color:var(--light);line-height:1.7;}
+.info-card ul{list-style:none;display:flex;flex-direction:column;gap:5px;margin-top:6px;}
+.info-card ul li{font-size:11.5px;color:var(--text);display:flex;gap:7px;align-items:flex-start;line-height:1.5;}
+.info-card ul li::before{content:'>';color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;margin-top:1px;}
+.chip{display:inline;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);
+      color:var(--cyan);padding:1px 6px;border-radius:4px;
+      font-family:'JetBrains Mono',monospace;font-size:10px;}
+.badge-green{display:inline-flex;align-items:center;gap:5px;background:var(--green-dim);
+             border:1px solid rgba(0,255,136,.25);color:var(--green);
+             padding:4px 10px;border-radius:7px;font-size:11px;font-weight:600;margin-top:8px;}
+.badge-blue{display:inline-flex;align-items:center;gap:5px;background:var(--cyan-dim);
+            border:1px solid rgba(0,229,255,.25);color:var(--cyan);
+            padding:4px 10px;border-radius:7px;font-size:11px;font-weight:600;margin-top:8px;}
+
+/* ── METRICS TABLE ── */
+.metrics-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
+.metrics-tbl th{background:rgba(0,229,255,.1);color:var(--cyan);padding:7px 8px;
+                text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.4px;}
+.metrics-tbl td{padding:7px 8px;border-top:1px solid var(--border);color:var(--text);}
+.metrics-tbl tr.best td{color:var(--cyan);}
+.best-tag{background:rgba(0,229,255,.15);color:var(--cyan);padding:1px 6px;
+          border-radius:4px;font-size:9px;font-family:'JetBrains Mono',monospace;}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{background:var(--border);border-radius:4px;height:3px;margin:10px 0;overflow:hidden;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan));
+              border-radius:4px;transition:width .4s ease;width:0;}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding:20px;color:var(--muted);font-size:10px;
+        border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;
+        letter-spacing:.3px;margin-top:8px;}
 </style>
 </head>
 <body>
-<div class="page">
 
-<h1>ðŸ“ˆ Sales Forecasting System</h1>
-<p class="sub">Time-series Â· Prophet &amp; XGBoost Â· Feature Engineering Â· RMSE / MAE</p>
-<div class="badge"><div class="dot"></div>LIVE SIMULATION</div>
-
-<div class="pipe">
-  <div class="ps done"><div class="pi">ðŸ—‚</div><div class="pn">01</div><div class="pl">Dataset</div></div>
-  <div class="ps done"><div class="pi">ðŸ§¹</div><div class="pn">02</div><div class="pl">Preprocess</div></div>
-  <div class="ps done"><div class="pi">âš™ï¸</div><div class="pn">03</div><div class="pl">Features</div></div>
-  <div class="ps done"><div class="pi">âœ‚ï¸</div><div class="pn">04</div><div class="pl">Train/Test</div></div>
-  <div class="ps done"><div class="pi">ðŸ”®</div><div class="pn">05</div><div class="pl">Prophet</div></div>
-  <div class="ps done"><div class="pi">ðŸŒ²</div><div class="pn">06</div><div class="pl">XGBoost</div></div>
-  <div class="ps act"><div class="pi">ðŸ“Š</div><div class="pn">07</div><div class="pl">Evaluate</div></div>
-</div>
-
-<div class="ctrls">
-  <div class="cg">
-    <label>Noise Level</label>
-    <div class="nw">
-      <input type="range" id="slN" min="5" max="50" value="20" oninput="document.getElementById('nv').textContent=this.value"/>
-      <span class="nv" id="nv">20</span>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-icon">&#128200;</div>
+    <div>
+      <div class="header-title">Sales Forecasting System</div>
+      <div class="header-sub">Time-series &middot; Prophet &amp; XGBoost &middot; Feature Engineering &middot; RMSE / MAE</div>
     </div>
   </div>
-  <div class="cg">
-    <label>Test Period</label>
-    <select id="selT"><option value="60">60 days</option><option value="90" selected>90 days</option><option value="120">120 days</option></select>
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    LIVE SIMULATION
   </div>
-  <div class="cg">
-    <label>Trend</label>
-    <select id="selTr"><option value="up">Upward</option><option value="flat">Flat</option><option value="down">Downward</option></select>
+</div>
+
+<!-- TAB BAR -->
+<div class="tabs" id="tabBar">
+  <div class="tab active" onclick="switchTab(0)">
+    <div class="tab-num">01</div>
+    <div class="tab-icon">&#128196;</div>
+    <div class="tab-label">Dataset</div>
   </div>
-  <button id="RUN" onclick="go()">
-    <div class="spi" id="spi"></div>
-    <span id="btnL">â–¶ RUN PIPELINE</span>
+  <div class="tab" onclick="switchTab(1)">
+    <div class="tab-num">02</div>
+    <div class="tab-icon">&#129529;</div>
+    <div class="tab-label">Preprocess</div>
+  </div>
+  <div class="tab" onclick="switchTab(2)">
+    <div class="tab-num">03</div>
+    <div class="tab-icon">&#9881;</div>
+    <div class="tab-label">Features</div>
+  </div>
+  <div class="tab" onclick="switchTab(3)">
+    <div class="tab-num">04</div>
+    <div class="tab-icon">&#9986;</div>
+    <div class="tab-label">Train/Test</div>
+  </div>
+  <div class="tab" onclick="switchTab(4)">
+    <div class="tab-num">05</div>
+    <div class="tab-icon">&#128302;</div>
+    <div class="tab-label">Prophet</div>
+  </div>
+  <div class="tab" onclick="switchTab(5)">
+    <div class="tab-num">06</div>
+    <div class="tab-icon">&#128200;</div>
+    <div class="tab-label">XGBoost</div>
+  </div>
+  <div class="tab" onclick="switchTab(6)">
+    <div class="tab-num">07</div>
+    <div class="tab-icon">&#128202;</div>
+    <div class="tab-label">Evaluate</div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="ctrl-group">
+    <div class="ctrl-label">TEST PERIOD</div>
+    <select class="ctrl-select" id="testPeriod" onchange="updateParams()">
+      <option value="60">60 days</option>
+      <option value="90" selected>90 days</option>
+      <option value="180">180 days</option>
+      <option value="365">365 days</option>
+    </select>
+  </div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">TREND</div>
+    <select class="ctrl-select" id="trendType" onchange="updateParams()">
+      <option value="up" selected>Upward</option>
+      <option value="flat">Flat</option>
+      <option value="down">Downward</option>
+      <option value="seasonal">Seasonal</option>
+    </select>
+  </div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">NOISE LEVEL <span class="ctrl-val" id="noiseVal">50</span></div>
+    <input type="range" class="ctrl-range" id="noiseLevel"
+           min="10" max="100" value="50"
+           oninput="document.getElementById('noiseVal').textContent=this.value">
+  </div>
+  <button class="run-btn" id="runBtn" onclick="runPipeline()">
+    &#9654; RUN PIPELINE
   </button>
 </div>
 
-<div class="metrics">
-  <div class="mc"><div class="ml">Data Points</div><div class="mv ca" id="mTot">â€”</div><div class="ms">3-year daily</div></div>
-  <div class="mc"><div class="ml">Train Size</div><div class="mv ca" id="mTr">â€”</div><div class="ms">rows</div></div>
-  <div class="mc"><div class="ml">Test Size</div><div class="mv ca" id="mTe">â€”</div><div class="ms">rows</div></div>
-  <div class="mc"><div class="ml">Prophet RMSE</div><div class="mv cr" id="mPr">â€”</div><div class="ms">MAE: <span id="mPm">â€”</span></div></div>
-  <div class="mc"><div class="ml">XGBoost RMSE</div><div class="mv cg2" id="mXr">â€”</div><div class="ms">MAE: <span id="mXm">â€”</span></div><div class="bt" id="btag">â˜… BEST</div></div>
+<!-- PROGRESS -->
+<div style="padding:0 16px;">
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
 </div>
 
-<div class="panel">
-  <div class="ptitle"><span class="tn">01</span> Full Time-Series + Forecast</div>
-  <div class="legend">
-    <div class="leg"><div class="ld" style="background:#556070"></div>Train</div>
-    <div class="leg"><div class="ld" style="background:#00e5ff"></div>Actual</div>
-    <div class="leg"><div class="ld" style="background:#ff4f6d"></div>Prophet</div>
-    <div class="leg"><div class="ld" style="background:#7cfc00"></div>XGBoost</div>
+<!-- STATS GRID -->
+<div class="stats-grid">
+  <div class="stat-card highlight">
+    <div class="stat-lbl">DATA POINTS</div>
+    <div class="stat-val" id="statTotal">--</div>
+    <div class="stat-sub">3-year daily</div>
   </div>
-  <div class="svgbox" id="sv1"></div>
+  <div class="stat-card">
+    <div class="stat-lbl">TRAIN SIZE</div>
+    <div class="stat-val" id="statTrain">--</div>
+    <div class="stat-sub">rows</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-lbl">TEST SIZE</div>
+    <div class="stat-val" id="statTest">--</div>
+    <div class="stat-sub">rows</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-lbl">PROPHET RMSE</div>
+    <div class="stat-val red" id="statProphet">--</div>
+    <div class="stat-sub">MAE: <span id="statProphetMAE">--</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-lbl">XGBOOST RMSE</div>
+    <div class="stat-val green" id="statXGB">--</div>
+    <div class="stat-sub">MAE: <span id="statXGBMAE">--</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-lbl">BEST MODEL</div>
+    <div class="stat-val orange" id="statBest">--</div>
+    <div class="stat-sub" id="statBestSub">--</div>
+  </div>
 </div>
 
-<div class="g2">
-  <div class="panel"><div class="ptitle"><span class="tn">02</span> Actual vs Predicted (Test)</div><div class="svgbox" id="sv2"></div></div>
-  <div class="panel"><div class="ptitle"><span class="tn">03</span> Daily Absolute Error</div><div class="svgbox" id="sv3"></div></div>
-  <div class="panel"><div class="ptitle"><span class="tn">04</span> RMSE &amp; MAE Comparison</div><div class="svgbox" id="sv4"></div></div>
-  <div class="panel"><div class="ptitle"><span class="tn">05</span> XGBoost Feature Importance</div><div id="featDiv"></div></div>
+<!-- ── CHART SECTION ── -->
+<div class="section">
+  <div class="sec-title"><span class="sec-num">01</span> FULL TIME-SERIES + FORECAST</div>
+  <div class="chart-card">
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4a6580"></div>Train</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Actual</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Prophet</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>XGBoost</div>
+    </div>
+    <canvas id="chart1" height="160"></canvas>
+  </div>
+
+  <div class="sec-title"><span class="sec-num">02</span> ACTUAL VS PREDICTED (TEST)</div>
+  <div class="chart-card">
+    <canvas id="chart2" height="140"></canvas>
+  </div>
+
+  <div class="sec-title"><span class="sec-num">03</span> DAILY ABSOLUTE ERROR</div>
+  <div class="chart-card">
+    <canvas id="chart3" height="110"></canvas>
+  </div>
+
+  <div class="sec-title"><span class="sec-num">04</span> RMSE &amp; MAE COMPARISON</div>
+  <div class="chart-card">
+    <div class="model-bars" id="modelBars">
+      <div class="model-row">
+        <div class="model-name">Prophet RMSE <span id="bar1v">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar1" style="background:var(--red);width:0%"></div></div>
+      </div>
+      <div class="model-row">
+        <div class="model-name">XGBoost RMSE <span id="bar2v">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar2" style="background:var(--green);width:0%"></div></div>
+      </div>
+      <div class="model-row">
+        <div class="model-name">Prophet MAE <span id="bar3v">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar3" style="background:#ff7b9c;width:0%"></div></div>
+      </div>
+      <div class="model-row">
+        <div class="model-name">XGBoost MAE <span id="bar4v">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar4" style="background:#66ffb2;width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title"><span class="sec-num">05</span> XGBOOST FEATURE IMPORTANCE</div>
+  <div class="chart-card">
+    <div class="feat-rows" id="featRows">
+      <div style="color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;">Run pipeline to see feature importance...</div>
+    </div>
+  </div>
 </div>
 
-<div class="logbox" id="logDiv"><span style="color:#556070">// Tap RUN PIPELINE to start...</span></div>
-</div>
+<!-- ── TAB PANELS ── -->
+<div style="padding:0 16px 16px;" id="tabPanels">
 
-<script>
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// MATH HELPERS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-function srand(seed){
-  var s=(seed>>>0)||1;
-  return function(){s=(Math.imul(1664525,s)+1013904223)>>>0;return s/4294967296;};
-}
-function linspace(a,b,n){var r=[];for(var i=0;i<n;i++)r.push(a+(b-a)*i/(n-1));return r;}
-function doy(d){return Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);}
-function rmse(a,p){var s=0;for(var i=0;i<a.length;i++)s+=(a[i]-p[i])*(a[i]-p[i]);return Math.sqrt(s/a.length);}
-function mae(a,p){var s=0;for(var i=0;i<a.length;i++)s+=Math.abs(a[i]-p[i]);return s/a.length;}
-function fmtD(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
-function amin(a){var m=a[0];for(var i=1;i<a.length;i++)if(a[i]<m)m=a[i];return m;}
-function amax(a){var m=a[0];for(var i=1;i<a.length;i++)if(a[i]>m)m=a[i];return m;}
-function subsample(arr,n){
-  if(arr.length<=n)return arr.slice();
-  var o=[],s=arr.length/n;
-  for(var i=0;i<n;i++)o.push(arr[Math.round(i*s)]);
-  return o;
-}
+  <!-- Panel 0: Dataset -->
+  <div class="panel active" id="panel0">
+    <div class="info-card">
+      <h4>&#128196; Dataset Overview</h4>
+      <p>Historical daily sales data used to train time-series forecasting models.</p>
+      <ul>
+        <li>Date range: <strong>3 years of daily data</strong></li>
+        <li>Frequency: Daily (365 rows/year)</li>
+        <li>Target column: <span class="chip">sales</span></li>
+        <li>Load with <span class="chip">pd.read_csv('sales.csv', parse_dates=['date'])</span></li>
+        <li>Check missing values: <span class="chip">df.isnull().sum()</span></li>
+        <li>View stats: <span class="chip">df['sales'].describe()</span></li>
+      </ul>
+      <div class="badge-green">&#10003; Dataset loaded &mdash; <span id="p0rows">run pipeline</span></div>
+    </div>
+  </div>
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// DATA SIMULATION
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-function genData(noise,trendType){
-  var rand=srand(42),n=3*365;
-  var tEnd=trendType==='up'?350:trendType==='down'?150:215;
-  var trend=linspace(200,tEnd,n),dates=[],sales=[];
-  var s0=new Date(2021,0,1);
-  for(var i=0;i<n;i++){
-    var d=new Date(s0.getTime()+i*86400000);dates.push(d);
-    var w=40*Math.sin(2*Math.PI*d.getDay()/7);
-    var y=60*Math.sin(2*Math.PI*(doy(d)-90)/365);
-    var h=0,mo=d.getMonth(),dy=d.getDate();
-    if(mo===10&&dy>=25)h=150;if(mo===11&&dy>=20)h=200;if(mo===0&&dy<=3)h=100;
-    sales.push(Math.max(50,trend[i]+w+y+h+(rand()-.5)*2*noise*2));
-  }
-  for(var j=0;j<Math.floor(n*.02);j++){var ix=1+Math.floor(rand()*(n-2));sales[ix]=(sales[ix-1]+sales[ix+1])/2;}
-  return{dates:dates,sales:sales};
-}
-function prophetPred(trS,teD){
-  var n=trS.length,sl=(trS[n-1]-trS[0])/n,ic=trS[0],rand=srand(777);
-  return teD.map(function(d,i){
-    var t=ic+sl*(n+i),w=35*Math.sin(2*Math.PI*d.getDay()/7),y=55*Math.sin(2*Math.PI*(doy(d)-90)/365);
-    var h=0,mo=d.getMonth(),dy=d.getDate();
-    if(mo===10&&dy>=25)h=140;if(mo===11&&dy>=20)h=185;if(mo===0&&dy<=3)h=95;
-    return Math.max(50,t+w+y+h+(rand()-.5)*2*22);
-  });
-}
-function xgbPred(trS,teD){
-  var all=trS.slice(),n=trS.length,rand=srand(999);
-  return teD.map(function(d,idx){
-    var i=n+idx,g7=all[i-7]||all[0],g14=all[i-14]||all[0],g28=all[i-28]||all[0];
-    var sl=0,sc=Math.min(7,i);for(var k=Math.max(0,i-7);k<i;k++)sl+=all[k];
-    var r7=sc>0?sl/sc:all[0];
-    var base=.55*g7+.25*g14+.12*g28+.08*r7;
-    var cal=8*Math.sin(2*Math.PI*d.getDay()/7)+10*Math.sin(2*Math.PI*(doy(d)-90)/365);
-    var h=0,mo=d.getMonth(),dy=d.getDate();
-    if(mo===10&&dy>=25)h=148;if(mo===11&&dy>=20)h=190;if(mo===0&&dy<=3)h=98;
-    var p=Math.max(50,base+cal+h+(rand()-.5)*2*14);all.push(p);return p;
-  });
-}
+  <!-- Panel 1: Preprocess -->
+  <div class="panel" id="panel1">
+    <div class="info-card">
+      <h4>&#129529; Preprocessing</h4>
+      <p>Clean missing values and cap outliers before feature extraction.</p>
+      <ul>
+        <li>Reindex to daily frequency: <span class="chip">asfreq('D')</span></li>
+        <li>Fill gaps: <span class="chip">interpolate(method='time')</span></li>
+        <li>IQR outlier detection: Q1 &minus; 1.5&times;IQR &rarr; Q3 + 1.5&times;IQR</li>
+        <li>Winsorise (clip) extreme spikes</li>
+        <li>Final missing count: <strong>0</strong></li>
+      </ul>
+      <div class="badge-green">&#10003; Data cleaned &mdash; 0 missing values</div>
+    </div>
+  </div>
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// SVG CHART ENGINE
-// viewBox="0 0 600 H" â€” scales to any width
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-var VW=600; // virtual width
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  <!-- Panel 2: Features -->
+  <div class="panel" id="panel2">
+    <div class="info-card">
+      <h4>&#9881; Feature Engineering (23 features)</h4>
+      <ul>
+        <li><strong>Calendar:</strong> year, month, day, quarter, week_of_year, doy</li>
+        <li><strong>Flags:</strong> is_weekend, is_month_end, is_month_start</li>
+        <li><strong>Cyclical:</strong> <span class="chip">dow_sin</span> <span class="chip">dow_cos</span> <span class="chip">month_sin</span> <span class="chip">month_cos</span></li>
+        <li><strong>Lags:</strong> <span class="chip">lag_1</span> <span class="chip">lag_7</span> <span class="chip">lag_14</span> <span class="chip">lag_30</span></li>
+        <li><strong>Rolling mean:</strong> <span class="chip">rm_7</span> <span class="chip">rm_14</span> <span class="chip">rm_30</span></li>
+        <li><strong>Rolling std:</strong> <span class="chip">rs_7</span> <span class="chip">rs_14</span> <span class="chip">rs_30</span></li>
+      </ul>
+      <div class="badge-blue">&#9881; 23 features created</div>
+    </div>
+  </div>
 
-function makeSVG(H,content){
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+VW+' '+H+'" preserveAspectRatio="none">'
-    +'<rect width="'+VW+'" height="'+H+'" fill="#141c2e"/>'
-    +content+'</svg>';
-}
+  <!-- Panel 3: Train/Test -->
+  <div class="panel" id="panel3">
+    <div class="info-card">
+      <h4>&#9986; Chronological Train / Test Split</h4>
+      <p>Split in time order &mdash; no random shuffle &mdash; no data leakage.</p>
+      <ul>
+        <li>Sort by date ascending</li>
+        <li>Train: first 80% of rows</li>
+        <li>Test: last 20% of rows (unseen future)</li>
+        <li>Scale: <span class="chip">StandardScaler</span> fit on train only</li>
+        <li>Test = <span id="p3test">--</span> rows &mdash; <span id="p3days">--</span> day window</li>
+      </ul>
+      <div class="badge-green">&#10003; Split done &mdash; zero leakage</div>
+    </div>
+  </div>
 
-var PAD={t:12,b:26,l:42,r:10};
-
-function vpx(i,n){return PAD.l+(VW-PAD.l-PAD.r)*i/(n-1||1);}
-function vpy(v,mn,mx,H){var iH=H-PAD.t-PAD.b;return PAD.t+iH*(1-(v-mn)/(mx-mn||1));}
-
-function svgGrid(H,mn,mx,labels){
-  var iW=VW-PAD.l-PAD.r,iH=H-PAD.t-PAD.b,s='';
-  // horizontal grid + y labels
-  for(var i=0;i<=5;i++){
-    var v=mn+(mx-mn)*i/5,y=PAD.t+iH-iH*i/5;
-    s+='<line x1="'+PAD.l+'" y1="'+y+'" x2="'+(PAD.l+iW)+'" y2="'+y+'" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>';
-    s+='<text x="'+(PAD.l-4)+'" y="'+y+'" fill="#556070" font-size="9" font-family="monospace" text-anchor="end" dominant-baseline="middle">'+Math.round(v)+'</text>';
-  }
-  // x labels
-  if(labels&&labels.length){
-    var step=Math.max(1,Math.floor(labels.length/5));
-    for(var j=0;j<labels.length;j+=step){
-      var x=vpx(j,labels.length),lbl=(labels[j]||'').slice(0,7);
-      s+='<text x="'+x+'" y="'+(PAD.t+iH+14)+'" fill="#556070" font-size="8" font-family="monospace" text-anchor="middle">'+esc(lbl)+'</text>';
-    }
-  }
-  // axes
-  s+='<line x1="'+PAD.l+'" y1="'+PAD.t+'" x2="'+PAD.l+'" y2="'+(PAD.t+iH)+'" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>';
-  s+='<line x1="'+PAD.l+'" y1="'+(PAD.t+iH)+'" x2="'+(PAD.l+iW)+'" y2="'+(PAD.t+iH)+'" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>';
-  return s;
-}
-
-function svgPolyline(vals,nullMask,color,sw,dash,H,mn,mx){
-  var pts='',seg=[],s='';
-  function flush(){
-    if(seg.length<2){seg=[];return;}
-    var d=seg.map(function(p){return p[0]+','+p[1];}).join(' ');
-    s+='<polyline points="'+d+'" fill="none" stroke="'+color+'" stroke-width="'+sw+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+' stroke-linejoin="round" stroke-linecap="round"/>';
-    seg=[];
-  }
-  for(var i=0;i<vals.length;i++){
-    if(nullMask&&nullMask[i]){flush();continue;}
-    seg.push([vpx(i,vals.length).toFixed(1), vpy(vals[i],mn,mx,H).toFixed(1)]);
-  }
-  flush();
-  return s;
-}
-
-function svgBars(vals,color,off,bw,H,mn,mx){
-  var iH=H-PAD.t-PAD.b,s='';
-  var base=vpy(0,mn,mx,H);
-  for(var i=0;i<vals.length;i++){
-    var x=vpx(i,vals.length)+off,y=vpy(vals[i],mn,mx,H);
-    var h=Math.abs(base-y)||1;
-    var top=Math.min(y,base);
-    s+='<rect x="'+(x-bw/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw+'" height="'+h.toFixed(1)+'" fill="'+color+'"/>';
-  }
-  return s;
-}
-
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// LOG
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-function clearLog(){document.getElementById('logDiv').innerHTML='';}
-function log(msg,col){
-  var b=document.getElementById('logDiv'),el=document.createElement('div');
-  el.style.color=col||'#4ade80';el.textContent='> '+msg;b.appendChild(el);b.scrollTop=b.scrollHeight;
-}
-
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// MAIN PIPELINE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-var _busy=false;
-function go(){
-  if(_busy)return;_busy=true;
-  var btn=document.getElementById('RUN');
-  btn.disabled=true;
-  document.getElementById('spi').style.display='block';
-  document.getElementById('btnL').textContent='RUNNING...';
-  setTimeout(function(){
-    try{pipeline();}catch(e){log('ERROR: '+e.message,'#ff4f6d');}
-    _busy=false;btn.disabled=false;
-    document.getElementById('spi').style.display='none';
-    document.getElementById('btnL').textContent='â–¶ RUN PIPELINE';
-  },60);
-}
-
-function pipeline(){
-  clearLog();
-  var noise=parseInt(document.getElementById('slN').value)||20;
-  var tdays=parseInt(document.getElementById('selT').value)||90;
-  var trend=document.getElementById('selTr').value||'up';
-
-  log('Pipeline start...','#556070');
-  log('noise='+noise+' test='+tdays+'d trend='+trend,'#00e5ff');
-
-  var g=genData(noise,trend),dates=g.dates,sales=g.sales;
-  log('Dataset: '+dates.length+' rows');
-
-  var si=dates.length-tdays;
-  var trD=dates.slice(0,si),trS=sales.slice(0,si);
-  var teD=dates.slice(si),teS=sales.slice(si);
-  log('Train:'+trD.length+' Test:'+teD.length,'#00e5ff');
-  log('Feature engineering: lag/rolling/calendar...','#556070');
-
-  log('Prophet fitting...','#ff4f6d');
-  var pP=prophetPred(trS,teD),pR=rmse(teS,pP),pM=mae(teS,pP);
-  log('Prophet RMSE:'+pR.toFixed(2)+' MAE:'+pM.toFixed(2));
-
-  log('XGBoost training...','#7cfc00');
-  var xP=xgbPred(trS,teD),xR=rmse(teS,xP),xM=mae(teS,xP);
-  log('XGBoost RMSE:'+xR.toFixed(2)+' MAE:'+xM.toFixed(2));
-
-  var win=xR<pR?'XGBoost':'Prophet';
-  log('Best model: '+win,'#00e5ff');
-
-  // metrics
-  document.getElementById('mTot').textContent=dates.length;
-  document.getElementById('mTr').textContent=trD.length;
-  document.getElementById('mTe').textContent=teD.length;
-  document.getElementById('mPr').textContent=pR.toFixed(1);
-  document.getElementById('mPm').textContent=pM.toFixed(1);
-  document.getElementById('mXr').textContent=xR.toFixed(1);
-  document.getElementById('mXm').textContent=xM.toFixed(1);
-  document.getElementById('btag').style.display=win==='XGBoost'?'inline-block':'none';
-
-  var MAX=280;
-  var allSales=trS.concat(teS);
-  var allDates=trD.concat(teD).map(fmtD);
-  var teDates=teD.map(fmtD);
-
-  // null masks
-  var nTr=trS.map(function(){return 1;}),nTe=teS.map(function(){return 1;});
-  var full_tr=trS.concat(teS.map(function(){return 0;}));
-  var full_ac=trS.map(function(){return 0;}).concat(teS);
-  var full_pp=trS.map(function(){return 0;}).concat(pP);
-  var full_xp=trS.map(function(){return 0;}).concat(xP);
-  var mask_tr=nTr.concat(nTe); // 1 where train exists â†’ for train line, mask out test part
-  var mask_te=nTe.concat(nTr); // for actual/forecast lines, mask out train part
-
-  // â”€â”€ Chart 1: full series â”€â”€
-  var H1=230,SMAX=MAX;
-  var step1=Math.max(1,Math.floor(allSales.length/SMAX));
-  var s_tr=[],s_ac=[],s_pp=[],s_xp=[],s_lab=[],s_mtr=[],s_mte=[];
-  for(var i=0;i<allSales.length;i+=step1){
-    s_tr.push(full_tr[i]);s_ac.push(full_ac[i]);
-    s_pp.push(full_pp[i]);s_xp.push(full_xp[i]);
-    s_lab.push(allDates[i]);
-    s_mtr.push(i<trS.length?0:1); // 1=null for train line in test zone
-    s_mte.push(i<trS.length?1:0); // 1=null for forecast lines in train zone
-  }
-  var mnA=Math.floor(amin(allSales)*.92),mxA=Math.ceil(amax(allSales)*1.08);
-  var svg1=svgGrid(H1,mnA,mxA,s_lab);
-  svg1+=svgPolyline(s_tr,s_mtr,'#556070',1,null,H1,mnA,mxA);
-  svg1+=svgPolyline(s_ac,s_mte,'#00e5ff',2,null,H1,mnA,mxA);
-  svg1+=svgPolyline(s_pp,s_mte,'#ff4f6d',1.5,'5,3',H1,mnA,mxA);
-  svg1+=svgPolyline(s_xp,s_mte,'#7cfc00',1.5,'2,3',H1,mnA,mxA);
-  document.getElementById('sv1').innerHTML=makeSVG(H1,svg1);
-
-  // â”€â”€ Chart 2: test zoom â”€â”€
-  var H2=200;
-  var step2=Math.max(1,Math.floor(teS.length/MAX));
-  var s2_ac=[],s2_pp=[],s2_xp=[],s2_lab=[];
-  for(var i=0;i<teS.length;i+=step2){s2_ac.push(teS[i]);s2_pp.push(pP[i]);s2_xp.push(xP[i]);s2
+  <!-- Panel 4: Prophet -->
+  <div class="panel" id="panel4">
+    <div class="info-card">
+      <h4>&
