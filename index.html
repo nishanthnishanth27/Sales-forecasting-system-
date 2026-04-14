@@ -6,492 +6,397 @@
 <title>Sales Forecasting System</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0b0f1e;--card:#141c2e;--border:#1e2d45;
-  --accent:#00e5ff;--red:#ff4f6d;--green:#7cfc00;
-  --text:#dde6f0;--muted:#556070;
-}
-html,body{
-  background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  min-height:100vh;-webkit-tap-highlight-color:transparent;
-}
-.page{max-width:900px;margin:0 auto;padding:14px 10px 60px}
-
-/* Header */
-.hdr h1{font-size:19px;color:var(--accent);font-family:monospace;letter-spacing:-.5px}
+:root{--bg:#0b0f1e;--card:#141c2e;--border:#1e2d45;--accent:#00e5ff;--red:#ff4f6d;--green:#7cfc00;--muted:#556070;--text:#dde6f0}
+html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;-webkit-tap-highlight-color:transparent}
+.page{max-width:860px;margin:0 auto;padding:14px 12px 60px}
+.hdr h1{font-size:18px;color:var(--accent);font-family:monospace}
 .hdr p{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.3);
-  color:var(--accent);font-family:monospace;font-size:10px;
-  padding:3px 9px;border-radius:4px;margin-top:7px
-}
+.badge{display:inline-flex;align-items:center;gap:5px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.3);color:var(--accent);font-family:monospace;font-size:10px;padding:3px 9px;border-radius:4px;margin-top:7px}
 .dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:bl 1.2s infinite}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:.1}}
-
-/* Pipeline */
 .pipe{display:flex;overflow-x:auto;margin:14px 0;-webkit-overflow-scrolling:touch}
-.ps{
-  flex:0 0 auto;min-width:68px;
-  background:var(--card);border:1px solid var(--border);
-  border-right:none;padding:7px 4px;text-align:center
-}
-.ps:first-child{border-radius:6px 0 0 6px}
-.ps:last-child{border-right:1px solid var(--border);border-radius:0 6px 6px 0}
-.ps.done{background:rgba(124,252,0,.04)}
-.ps.active{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.5)}
-.ps .i{font-size:16px}
-.ps .n{font-size:9px;color:var(--muted);font-family:monospace;margin-top:2px}
-.ps .l{font-size:10px;font-weight:600;margin-top:1px}
-
-/* Controls */
+.ps{flex:0 0 auto;min-width:66px;background:var(--card);border:1px solid var(--border);border-right:none;padding:7px 4px;text-align:center}
+.ps:first-child{border-radius:6px 0 0 6px}.ps:last-child{border-right:1px solid var(--border);border-radius:0 6px 6px 0}
+.ps.done{background:rgba(124,252,0,.04)}.ps.active{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.5)}
+.ps .i{font-size:15px}.ps .n{font-size:9px;color:var(--muted);font-family:monospace;margin-top:2px}.ps .l{font-size:10px;font-weight:600;margin-top:1px}
 .ctrl-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:14px}
 .cg{display:flex;flex-direction:column;gap:3px}
 .cg label{font-size:9px;color:var(--muted);font-family:monospace;text-transform:uppercase;letter-spacing:.06em}
-select{
-  background:var(--card);border:1px solid var(--border);
-  color:var(--text);padding:9px 28px 9px 9px;border-radius:6px;
-  font-size:13px;outline:none;min-height:44px;
-  -webkit-appearance:none;appearance:none;cursor:pointer;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23556070'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 9px center
-}
+select{background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 26px 10px 9px;border-radius:6px;font-size:13px;outline:none;min-height:44px;-webkit-appearance:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23556070'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
 .nw{display:flex;align-items:center;gap:7px}
 input[type=range]{width:90px;accent-color:var(--accent);cursor:pointer}
 .nv{font-family:monospace;font-size:13px;color:var(--accent);min-width:22px}
-#runBtn{
-  min-height:48px;min-width:148px;
-  background:var(--accent);color:#000;
-  border:none;border-radius:6px;
-  font-family:monospace;font-size:13px;font-weight:700;
-  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:7px;
-  touch-action:manipulation;-webkit-user-select:none;user-select:none;
-  transition:opacity .15s,transform .1s
-}
-#runBtn:active{opacity:.8;transform:scale(.97)}
-#runBtn:disabled{opacity:.6}
-.sp{
-  display:none;width:13px;height:13px;
-  border:2px solid rgba(0,0,0,.25);border-top-color:#000;
-  border-radius:50%;animation:spin .5s linear infinite
-}
+#RUN{min-height:50px;min-width:160px;background:var(--accent);color:#000;border:none;border-radius:6px;font-family:monospace;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+#RUN:active{opacity:.8}
+.sp{display:none;width:13px;height:13px;border:2px solid rgba(0,0,0,.25);border-top-color:#000;border-radius:50%;animation:spin .5s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Metrics */
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 @media(min-width:480px){.metrics{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:720px){.metrics{grid-template-columns:repeat(5,1fr)}}
 .mc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 10px}
 .mc .ml{font-size:9px;font-family:monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
-.mc .mv{font-size:21px;font-family:monospace;font-weight:700;line-height:1;min-height:21px}
+.mc .mv{font-size:20px;font-family:monospace;font-weight:700;line-height:1;min-height:20px}
 .mc .ms{font-size:11px;color:var(--muted);margin-top:3px}
-.ca{color:var(--accent)}.cr{color:var(--red)}.cg{color:var(--green)}
-.bt{
-  display:none;margin-top:4px;
-  background:rgba(124,252,0,.12);border:1px solid rgba(124,252,0,.35);
-  color:var(--green);font-family:monospace;font-size:9px;
-  padding:2px 5px;border-radius:3px
-}
-
-/* Panels */
+.ca{color:var(--accent)}.cr{color:var(--red)}.cg2{color:var(--green)}
+.bt{display:none;margin-top:4px;background:rgba(124,252,0,.12);border:1px solid rgba(124,252,0,.35);color:var(--green);font-family:monospace;font-size:9px;padding:2px 5px;border-radius:3px}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 10px 10px;margin-bottom:10px}
 .ptitle{font-family:monospace;font-size:10px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px}
 .ptitle .tn{color:var(--accent)}
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:7px}
 .leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
 .ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* Canvas containers — inline-block with explicit size */
-.cbox{width:100%;overflow:hidden;border-radius:4px}
-
-/* Grid */
+/* CANVAS: use block + explicit height, no width on element (set via JS) */
+canvas{display:block;width:100%!important}
 .g2{display:grid;grid-template-columns:1fr;gap:10px}
-@media(min-width:620px){.g2{grid-template-columns:1fr 1fr}}
-
-/* Feature importance */
+@media(min-width:600px){.g2{grid-template-columns:1fr 1fr}}
 .fr{display:flex;align-items:center;gap:7px;margin-bottom:6px}
 .fn{font-family:monospace;font-size:10px;color:var(--muted);width:85px;flex-shrink:0;text-align:right}
 .fb{flex:1;background:rgba(255,255,255,.05);border-radius:2px;height:8px;overflow:hidden}
-.fbi{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),rgba(124,252,0,.3));transition:width .6s ease}
+.fbi{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),rgba(124,252,0,.3))}
 .fv{font-family:monospace;font-size:10px;color:var(--green);width:32px;text-align:right}
-
-/* Log */
-.log{
-  background:#060d1a;border:1px solid var(--border);
-  border-radius:7px;padding:9px 11px;
-  font-family:monospace;font-size:11px;line-height:1.9;
-  color:#4ade80;max-height:150px;overflow-y:auto;margin-top:10px
-}
+.log{background:#060d1a;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:monospace;font-size:11px;line-height:1.9;color:#4ade80;max-height:140px;overflow-y:auto;margin-top:10px}
 </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="hdr">
-    <h1>📈 Sales Forecasting System</h1>
-    <p>Time-series · Prophet &amp; XGBoost · Feature Engineering · RMSE / MAE</p>
-    <div class="badge"><div class="dot"></div>LIVE SIMULATION</div>
-  </div>
+<div class="hdr">
+  <h1>📈 Sales Forecasting System</h1>
+  <p>Time-series · Prophet &amp; XGBoost · Feature Engineering · RMSE / MAE</p>
+  <div class="badge"><div class="dot"></div>LIVE SIMULATION</div>
+</div>
 
-  <div class="pipe">
-    <div class="ps done"><div class="i">🗂</div><div class="n">01</div><div class="l">Dataset</div></div>
-    <div class="ps done"><div class="i">🧹</div><div class="n">02</div><div class="l">Preprocess</div></div>
-    <div class="ps done"><div class="i">⚙️</div><div class="n">03</div><div class="l">Features</div></div>
-    <div class="ps done"><div class="i">✂️</div><div class="n">04</div><div class="l">Train/Test</div></div>
-    <div class="ps done"><div class="i">🔮</div><div class="n">05</div><div class="l">Prophet</div></div>
-    <div class="ps done"><div class="i">🌲</div><div class="n">06</div><div class="l">XGBoost</div></div>
-    <div class="ps active"><div class="i">📊</div><div class="n">07</div><div class="l">Evaluate</div></div>
-  </div>
+<div class="pipe">
+  <div class="ps done"><div class="i">🗂</div><div class="n">01</div><div class="l">Dataset</div></div>
+  <div class="ps done"><div class="i">🧹</div><div class="n">02</div><div class="l">Preprocess</div></div>
+  <div class="ps done"><div class="i">⚙️</div><div class="n">03</div><div class="l">Features</div></div>
+  <div class="ps done"><div class="i">✂️</div><div class="n">04</div><div class="l">Train/Test</div></div>
+  <div class="ps done"><div class="i">🔮</div><div class="n">05</div><div class="l">Prophet</div></div>
+  <div class="ps done"><div class="i">🌲</div><div class="n">06</div><div class="l">XGBoost</div></div>
+  <div class="ps active"><div class="i">📊</div><div class="n">07</div><div class="l">Evaluate</div></div>
+</div>
 
-  <div class="ctrl-row">
-    <div class="cg">
-      <label>Noise Level</label>
-      <div class="nw">
-        <input type="range" id="slNoise" min="5" max="50" value="20"
-          oninput="document.getElementById('nv').textContent=this.value"/>
-        <span class="nv" id="nv">20</span>
-      </div>
+<div class="ctrl-row">
+  <div class="cg">
+    <label>Noise Level</label>
+    <div class="nw">
+      <input type="range" id="slN" min="5" max="50" value="20" oninput="document.getElementById('nv').textContent=this.value"/>
+      <span class="nv" id="nv">20</span>
     </div>
-    <div class="cg">
-      <label>Test Period</label>
-      <select id="selTest">
-        <option value="60">60 days</option>
-        <option value="90" selected>90 days</option>
-        <option value="120">120 days</option>
-      </select>
-    </div>
-    <div class="cg">
-      <label>Trend</label>
-      <select id="selTrend">
-        <option value="up">Upward</option>
-        <option value="flat">Flat</option>
-        <option value="down">Downward</option>
-      </select>
-    </div>
-    <button id="runBtn">
-      <div class="sp" id="sp"></div>
-      <span id="btnLbl">▶ RUN PIPELINE</span>
-    </button>
   </div>
-
-  <div class="metrics">
-    <div class="mc"><div class="ml">Data Points</div><div class="mv ca" id="mTot">—</div><div class="ms">3-year daily</div></div>
-    <div class="mc"><div class="ml">Train Size</div><div class="mv ca" id="mTr">—</div><div class="ms">rows</div></div>
-    <div class="mc"><div class="ml">Test Size</div><div class="mv ca" id="mTe">—</div><div class="ms">rows</div></div>
-    <div class="mc"><div class="ml">Prophet RMSE</div><div class="mv cr" id="mPr">—</div><div class="ms">MAE: <span id="mPm">—</span></div></div>
-    <div class="mc"><div class="ml">XGBoost RMSE</div><div class="mv cg" id="mXr">—</div><div class="ms">MAE: <span id="mXm">—</span></div><div class="bt" id="btag">★ BEST</div></div>
+  <div class="cg">
+    <label>Test Period</label>
+    <select id="selT"><option value="60">60 days</option><option value="90" selected>90 days</option><option value="120">120 days</option></select>
   </div>
+  <div class="cg">
+    <label>Trend</label>
+    <select id="selTr"><option value="up">Upward</option><option value="flat">Flat</option><option value="down">Downward</option></select>
+  </div>
+  <button id="RUN" onclick="handleRun()">
+    <div class="sp" id="sp"></div>
+    <span id="btnL">▶ RUN PIPELINE</span>
+  </button>
+</div>
 
-  <!-- Chart 1 -->
+<div class="metrics">
+  <div class="mc"><div class="ml">Data Points</div><div class="mv ca" id="mTot">—</div><div class="ms">3-year daily</div></div>
+  <div class="mc"><div class="ml">Train Size</div><div class="mv ca" id="mTr">—</div><div class="ms">rows</div></div>
+  <div class="mc"><div class="ml">Test Size</div><div class="mv ca" id="mTe">—</div><div class="ms">rows</div></div>
+  <div class="mc"><div class="ml">Prophet RMSE</div><div class="mv cr" id="mPr">—</div><div class="ms">MAE: <span id="mPm">—</span></div></div>
+  <div class="mc"><div class="ml">XGBoost RMSE</div><div class="mv cg2" id="mXr">—</div><div class="ms">MAE: <span id="mXm">—</span></div><div class="bt" id="btag">★ BEST</div></div>
+</div>
+
+<div class="panel" id="p1">
+  <div class="ptitle"><span class="tn">01</span> Full Time-Series + Forecast</div>
+  <div class="legend">
+    <div class="leg"><div class="ld" style="background:#556070"></div>Train</div>
+    <div class="leg"><div class="ld" style="background:#00e5ff"></div>Actual</div>
+    <div class="leg"><div class="ld" style="background:#ff4f6d"></div>Prophet</div>
+    <div class="leg"><div class="ld" style="background:#7cfc00"></div>XGBoost</div>
+  </div>
+  <canvas id="c1" height="220"></canvas>
+</div>
+
+<div class="g2">
+  <div class="panel" id="p2">
+    <div class="ptitle"><span class="tn">02</span> Actual vs Predicted (Test)</div>
+    <canvas id="c2" height="190"></canvas>
+  </div>
+  <div class="panel" id="p3">
+    <div class="ptitle"><span class="tn">03</span> Daily Absolute Error</div>
+    <canvas id="c3" height="190"></canvas>
+  </div>
+  <div class="panel" id="p4">
+    <div class="ptitle"><span class="tn">04</span> RMSE &amp; MAE Comparison</div>
+    <canvas id="c4" height="190"></canvas>
+  </div>
   <div class="panel">
-    <div class="ptitle"><span class="tn">01</span> Full Time-Series + Forecast</div>
-    <div class="legend">
-      <div class="leg"><div class="ld" style="background:#556070"></div>Train</div>
-      <div class="leg"><div class="ld" style="background:#00e5ff"></div>Actual</div>
-      <div class="leg"><div class="ld" style="background:#ff4f6d"></div>Prophet</div>
-      <div class="leg"><div class="ld" style="background:#7cfc00"></div>XGBoost</div>
-    </div>
-    <div class="cbox" id="box1"><canvas id="c1"></canvas></div>
+    <div class="ptitle"><span class="tn">05</span> XGBoost Feature Importance</div>
+    <div id="featDiv"></div>
   </div>
+</div>
 
-  <div class="g2">
-    <div class="panel">
-      <div class="ptitle"><span class="tn">02</span> Actual vs Predicted (Test)</div>
-      <div class="cbox" id="box2"><canvas id="c2"></canvas></div>
-    </div>
-    <div class="panel">
-      <div class="ptitle"><span class="tn">03</span> Daily Absolute Error</div>
-      <div class="cbox" id="box3"><canvas id="c3"></canvas></div>
-    </div>
-    <div class="panel">
-      <div class="ptitle"><span class="tn">04</span> RMSE &amp; MAE Comparison</div>
-      <div class="cbox" id="box4"><canvas id="c4"></canvas></div>
-    </div>
-    <div class="panel">
-      <div class="ptitle"><span class="tn">05</span> XGBoost Feature Importance</div>
-      <div id="featDiv"></div>
-    </div>
-  </div>
-
-  <div class="log" id="logDiv"><span style="color:#556070">// Tap RUN PIPELINE to start...</span></div>
+<div class="log" id="logDiv"><span style="color:#556070">// Tap RUN PIPELINE to start...</span></div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  PURE CANVAS CHART ENGINE (zero dependencies)
-// ═══════════════════════════════════════════════
-var DPR = window.devicePixelRatio || 1;
+// ─────────────────────────────────────────────
+// CANVAS HELPER: size canvas to its container
+// ─────────────────────────────────────────────
+var DPR = Math.min(window.devicePixelRatio || 1, 2);
 
-function getBoxW(boxId) {
-  return document.getElementById(boxId).clientWidth || 320;
-}
-
-function initCanvas(id, boxId, h) {
-  var c = document.getElementById(id);
-  var w = getBoxW(boxId);
-  c.width  = w * DPR;
-  c.height = h * DPR;
-  c.style.width  = w + 'px';
-  c.style.height = h + 'px';
+function sizeCanvas(canvasId) {
+  var c = document.getElementById(canvasId);
+  var parent = c.parentNode;
+  var W = parent.clientWidth - 24; // subtract panel padding
+  if (W < 100) W = window.innerWidth - 48;
+  var H = parseInt(c.getAttribute('height')) || 200;
+  c.width  = Math.round(W * DPR);
+  c.height = Math.round(H * DPR);
+  c.style.width  = W + 'px';
+  c.style.height = H + 'px';
   var ctx = c.getContext('2d');
   ctx.scale(DPR, DPR);
-  return {ctx: ctx, W: w, H: h};
+  return { ctx: ctx, W: W, H: H };
 }
 
-// Colors
-var C = {
-  bg:      '#141c2e',
-  grid:    'rgba(255,255,255,0.06)',
-  tick:    '#556070',
-  train:   '#556070',
-  actual:  '#00e5ff',
-  prophet: '#ff4f6d',
-  xgb:     '#7cfc00',
-  propErr: 'rgba(255,79,109,0.55)',
-  xgbErr:  'rgba(124,252,0,0.4)',
-  text:    '#dde6f0'
-};
+// ─────────────────────────────────────────────
+// DRAWING PRIMITIVES
+// ─────────────────────────────────────────────
+var BG    = '#141c2e';
+var GRID  = 'rgba(255,255,255,0.05)';
+var TICK  = '#556070';
+var AXIS  = 'rgba(255,255,255,0.15)';
 
-// ── Subsample array to at most N points ──
-function sub(arr, n) {
-  if (arr.length <= n) return arr.slice();
-  var out = [], step = arr.length / n;
-  for (var i = 0; i < n; i++) out.push(arr[Math.floor(i * step)]);
-  return out;
-}
-function subPair(vals, labels, n) {
-  var sv = sub(vals, n), sl = [];
-  var step = vals.length / Math.min(vals.length, n);
-  for (var i = 0; i < sv.length; i++) sl.push(labels[Math.floor(i * step)] || '');
-  return {v: sv, l: sl};
-}
-
-// ── Draw axes + grid ──
-function drawAxes(ctx, W, H, pad, minV, maxV, labels, nTicks) {
-  var innerW = W - pad.l - pad.r;
-  var innerH = H - pad.t - pad.b;
+function drawBase(ctx, W, H, pad, minV, maxV, labels) {
   ctx.clearRect(0, 0, W, H);
-  ctx.fillStyle = C.bg;
+  ctx.fillStyle = BG;
   ctx.fillRect(0, 0, W, H);
-
-  // Y grid + labels
+  var iW = W - pad.l - pad.r;
+  var iH = H - pad.t - pad.b;
+  var NT = 5;
   ctx.font = '9px monospace';
-  ctx.fillStyle = C.tick;
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'middle';
-  nTicks = nTicks || 5;
-  for (var i = 0; i <= nTicks; i++) {
-    var val = minV + (maxV - minV) * i / nTicks;
-    var y   = pad.t + innerH - (innerH * i / nTicks);
-    ctx.strokeStyle = C.grid;
-    ctx.lineWidth = 0.5;
-    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + innerW, y); ctx.stroke();
-    ctx.fillText(Math.round(val), pad.l - 4, y);
+  for (var i = 0; i <= NT; i++) {
+    var v = minV + (maxV - minV) * i / NT;
+    var y = pad.t + iH - iH * i / NT;
+    ctx.strokeStyle = GRID; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + iW, y); ctx.stroke();
+    ctx.fillStyle = TICK; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(Math.round(v), pad.l - 3, y);
   }
-
-  // X tick labels (show ~5)
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-  var step = Math.max(1, Math.floor(labels.length / 5));
-  for (var j = 0; j < labels.length; j += step) {
-    var x = pad.l + innerW * j / (labels.length - 1 || 1);
-    var lbl = labels[j] ? labels[j].slice(0, 7) : '';
-    ctx.fillStyle = C.tick;
-    ctx.fillText(lbl, x, pad.t + innerH + 3);
+  if (labels && labels.length) {
+    var step = Math.max(1, Math.floor(labels.length / 5));
+    ctx.fillStyle = TICK; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (var j = 0; j < labels.length; j += step) {
+      var x = pad.l + iW * j / (labels.length - 1 || 1);
+      ctx.fillText((labels[j] || '').slice(0, 7), x, pad.t + iH + 3);
+    }
   }
-
-  // Axes lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(pad.l, pad.t);
-  ctx.lineTo(pad.l, pad.t + innerH);
-  ctx.lineTo(pad.l + innerW, pad.t + innerH);
-  ctx.stroke();
+  ctx.strokeStyle = AXIS; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t + iH);
+  ctx.lineTo(pad.l + iW, pad.t + iH); ctx.stroke();
 }
 
-// ── Map value → pixel Y ──
-function vy(val, minV, maxV, pad, H) {
-  var innerH = H - pad.t - pad.b;
-  return pad.t + innerH - (innerH * (val - minV) / (maxV - minV || 1));
-}
-function vx(idx, total, pad, W) {
-  var innerW = W - pad.l - pad.r;
-  return pad.l + innerW * idx / (total - 1 || 1);
-}
+function px(i, n, pad, W) { return pad.l + (W - pad.l - pad.r) * i / (n - 1 || 1); }
+function py(v, min, max, pad, H) { return pad.t + (H - pad.t - pad.b) * (1 - (v - min) / (max - min || 1)); }
 
-// ── Draw a line series ──
-function drawLine(ctx, vals, nullMask, color, lw, dash, W, H, pad, minV, maxV) {
-  ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lw;
-  ctx.setLineDash(dash || []);
-  ctx.beginPath();
-  var drawing = false;
+function drawLine(ctx, vals, nullTest, color, lw, dash, pad, W, H, min, max) {
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = lw;
+  ctx.setLineDash(dash || []); ctx.beginPath();
+  var started = false;
   for (var i = 0; i < vals.length; i++) {
-    if (nullMask && nullMask[i]) { drawing = false; continue; }
-    var x = vx(i, vals.length, pad, W);
-    var y = vy(vals[i], minV, maxV, pad, H);
-    if (!drawing) { ctx.moveTo(x, y); drawing = true; }
-    else ctx.lineTo(x, y);
+    if (nullTest && nullTest[i]) { started = false; continue; }
+    var x = px(i, vals.length, pad, W), y = py(vals[i], min, max, pad, H);
+    if (!started) { ctx.moveTo(x, y); started = true; } else { ctx.lineTo(x, y); }
   }
-  ctx.stroke();
-  ctx.restore();
+  ctx.stroke(); ctx.restore();
 }
 
-// ── Draw bar series ──
-function drawBars(ctx, vals, color, W, H, pad, minV, maxV, offset, barW) {
-  ctx.save();
-  ctx.fillStyle = color;
-  var n = vals.length;
-  for (var i = 0; i < n; i++) {
-    var x    = vx(i, n, pad, W) - barW/2 + offset;
-    var yTop = vy(vals[i], minV, maxV, pad, H);
-    var yBot = vy(0,        minV, maxV, pad, H);
-    if (yTop > yBot) { var t=yTop; yTop=yBot; yBot=t; }
-    ctx.fillRect(x, yTop, barW, Math.max(1, yBot - yTop));
+function drawBars(ctx, vals, color, off, bw, pad, W, H, min, max) {
+  ctx.save(); ctx.fillStyle = color;
+  for (var i = 0; i < vals.length; i++) {
+    var x    = px(i, vals.length, pad, W) - bw/2 + off;
+    var yTop = py(vals[i], min, max, pad, H);
+    var yBot = py(0,        min, max, pad, H);
+    if (yTop > yBot) { var t = yTop; yTop = yBot; yBot = t; }
+    ctx.fillRect(x, yTop, bw, Math.max(1, yBot - yTop));
   }
   ctx.restore();
 }
 
-// ═══════════════════════════════════════════════
-//  MATH / DATA
-// ═══════════════════════════════════════════════
-function seededRand(seed) {
-  var s = (seed >>> 0) || 1;
-  return function() {
-    s = (Math.imul(1664525, s) + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
+function arrMin(a) { var m = Infinity; for(var i=0;i<a.length;i++) if(a[i]<m) m=a[i]; return m; }
+function arrMax(a) { var m = -Infinity; for(var i=0;i<a.length;i++) if(a[i]>m) m=a[i]; return m; }
+function sub(a, n) {
+  if (a.length <= n) return a.slice();
+  var o = [], s = a.length / n;
+  for (var i = 0; i < n; i++) o.push(a[Math.round(i*s)]);
+  return o;
 }
-function doy(d) { return Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000); }
+function subWith(arrs, labels, n) {
+  var out = [], step = arrs[0].length / Math.min(arrs[0].length, n);
+  var oL = [];
+  for (var i = 0; i < Math.min(arrs[0].length, n); i++) {
+    var idx = Math.round(i * step);
+    var row = [];
+    for (var j = 0; j < arrs.length; j++) row.push(arrs[j][idx]);
+    out.push(row);
+    oL.push(labels ? labels[idx] : '');
+  }
+  // transpose back
+  var res = [];
+  for (var j = 0; j < arrs.length; j++) { res.push(out.map(function(r){ return r[j]; })); }
+  res.labels = oL;
+  return res;
+}
+
+// ─────────────────────────────────────────────
+// MATH
+// ─────────────────────────────────────────────
+function srand(seed) {
+  var s = (seed>>>0)||1;
+  return function(){ s=(Math.imul(1664525,s)+1013904223)>>>0; return s/4294967296; };
+}
 function linspace(a,b,n){var r=[];for(var i=0;i<n;i++)r.push(a+(b-a)*i/(n-1));return r;}
-function calcRMSE(a,p){var s=0;for(var i=0;i<a.length;i++)s+=(a[i]-p[i])*(a[i]-p[i]);return Math.sqrt(s/a.length);}
-function calcMAE(a,p){var s=0;for(var i=0;i<a.length;i++)s+=Math.abs(a[i]-p[i]);return s/a.length;}
-function fmtDate(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
-function arrMin(a){var m=a[0];for(var i=1;i<a.length;i++)if(a[i]<m)m=a[i];return m;}
-function arrMax(a){var m=a[0];for(var i=1;i<a.length;i++)if(a[i]>m)m=a[i];return m;}
+function doy(d){return Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);}
+function rmse(a,p){var s=0;for(var i=0;i<a.length;i++)s+=(a[i]-p[i])*(a[i]-p[i]);return Math.sqrt(s/a.length);}
+function mae(a,p){var s=0;for(var i=0;i<a.length;i++)s+=Math.abs(a[i]-p[i]);return s/a.length;}
+function fmtD(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 
-function generateData(noise, trendType) {
-  var rand=seededRand(42), n=3*365;
-  var trendEnd=trendType==='up'?350:trendType==='down'?150:215;
-  var trend=linspace(200,trendEnd,n);
-  var dates=[],sales=[];
-  var start=new Date(2021,0,1);
+function genData(noise, trendType) {
+  var rand=srand(42), n=3*365;
+  var tEnd=trendType==='up'?350:trendType==='down'?150:215;
+  var trend=linspace(200,tEnd,n), dates=[], sales=[];
+  var s0=new Date(2021,0,1);
   for(var i=0;i<n;i++){
-    var d=new Date(start.getTime()+i*86400000); dates.push(d);
-    var weekly=40*Math.sin(2*Math.PI*d.getDay()/7);
-    var yearly=60*Math.sin(2*Math.PI*(doy(d)-90)/365);
-    var h=0,mo=d.getMonth(),dy=d.getDate();
-    if(mo===10&&dy>=25)h=150; if(mo===11&&dy>=20)h=200; if(mo===0&&dy<=3)h=100;
-    sales.push(Math.max(50,trend[i]+weekly+yearly+h+(rand()-.5)*2*noise*2));
+    var d=new Date(s0.getTime()+i*86400000); dates.push(d);
+    var w=40*Math.sin(2*Math.PI*d.getDay()/7);
+    var y=60*Math.sin(2*Math.PI*(doy(d)-90)/365);
+    var h=0,m=d.getMonth(),dy=d.getDate();
+    if(m===10&&dy>=25)h=150; if(m===11&&dy>=20)h=200; if(m===0&&dy<=3)h=100;
+    sales.push(Math.max(50,trend[i]+w+y+h+(rand()-.5)*2*noise*2));
   }
-  for(var j=0;j<Math.floor(n*.02);j++){
-    var idx=1+Math.floor(rand()*(n-2));
-    sales[idx]=(sales[idx-1]+sales[idx+1])/2;
-  }
-  return {dates:dates,sales:sales};
+  for(var j=0;j<Math.floor(n*.02);j++){var idx=1+Math.floor(rand()*(n-2));sales[idx]=(sales[idx-1]+sales[idx+1])/2;}
+  return {dates:dates, sales:sales};
 }
 
-function prophetPredict(trS,teD){
-  var n=trS.length,slope=(trS[n-1]-trS[0])/n,intercept=trS[0],rand=seededRand(777);
+function prophetPred(trS,teD){
+  var n=trS.length,sl=(trS[n-1]-trS[0])/n,ic=trS[0],rand=srand(777);
   return teD.map(function(d,i){
-    var t=intercept+slope*(n+i);
-    var wk=35*Math.sin(2*Math.PI*d.getDay()/7),yr=55*Math.sin(2*Math.PI*(doy(d)-90)/365);
-    var h=0,mo=d.getMonth(),dy=d.getDate();
-    if(mo===10&&dy>=25)h=140; if(mo===11&&dy>=20)h=185; if(mo===0&&dy<=3)h=95;
-    return Math.max(50,t+wk+yr+h+(rand()-.5)*2*22);
+    var t=ic+sl*(n+i);
+    var w=35*Math.sin(2*Math.PI*d.getDay()/7),y=55*Math.sin(2*Math.PI*(doy(d)-90)/365);
+    var h=0,m=d.getMonth(),dy=d.getDate();
+    if(m===10&&dy>=25)h=140; if(m===11&&dy>=20)h=185; if(m===0&&dy<=3)h=95;
+    return Math.max(50,t+w+y+h+(rand()-.5)*2*22);
   });
 }
 
-function xgbPredict(trS,teD){
-  var all=trS.slice(),n=trS.length,rand=seededRand(999);
+function xgbPred(trS,teD){
+  var all=trS.slice(),n=trS.length,rand=srand(999);
   return teD.map(function(d,idx){
     var i=n+idx;
-    var g7=i>=7?all[i-7]:all[0],g14=i>=14?all[i-14]:all[0],g28=i>=28?all[i-28]:all[0];
+    var g7=all[i-7]||all[0], g14=all[i-14]||all[0], g28=all[i-28]||all[0];
     var sl=0,sc=Math.min(7,i);
-    for(var k=Math.max(0,i-7);k<i;k++)sl+=all[k];
-    var roll7=sc>0?sl/sc:all[0];
-    var base=.55*g7+.25*g14+.12*g28+.08*roll7;
+    for(var k=Math.max(0,i-7);k<i;k++) sl+=all[k];
+    var r7=sc>0?sl/sc:all[0];
+    var base=.55*g7+.25*g14+.12*g28+.08*r7;
     var cal=8*Math.sin(2*Math.PI*d.getDay()/7)+10*Math.sin(2*Math.PI*(doy(d)-90)/365);
-    var h=0,mo=d.getMonth(),dy=d.getDate();
-    if(mo===10&&dy>=25)h=148; if(mo===11&&dy>=20)h=190; if(mo===0&&dy<=3)h=98;
+    var h=0,m=d.getMonth(),dy=d.getDate();
+    if(m===10&&dy>=25)h=148; if(m===11&&dy>=20)h=190; if(m===0&&dy<=3)h=98;
     var pred=Math.max(50,base+cal+h+(rand()-.5)*2*14);
     all.push(pred); return pred;
   });
 }
 
-// ═══════════════════════════════════════════════
-//  LOG
-// ═══════════════════════════════════════════════
+// ─────────────────────────────────────────────
+// LOG
+// ─────────────────────────────────────────────
 function clearLog(){document.getElementById('logDiv').innerHTML='';}
-function addLog(msg,color){
-  var box=document.getElementById('logDiv');
-  var el=document.createElement('div');
-  el.style.color=color||'#4ade80';
-  el.textContent='> '+msg;
-  box.appendChild(el);
-  box.scrollTop=box.scrollHeight;
+function log(msg,col){
+  var b=document.getElementById('logDiv'),el=document.createElement('div');
+  el.style.color=col||'#4ade80'; el.textContent='> '+msg; b.appendChild(el); b.scrollTop=b.scrollHeight;
 }
 
-// ═══════════════════════════════════════════════
-//  DRAW ALL CHARTS
-// ═══════════════════════════════════════════════
-function drawAllCharts(trD,trS,teD,teS,pPreds,xPreds) {
-  var PAD = {t:10, b:22, l:38, r:8};
+// ─────────────────────────────────────────────
+// PIPELINE CORE
+// ─────────────────────────────────────────────
+function runCore() {
+  clearLog();
+  var noise    = parseInt(document.getElementById('slN').value)||20;
+  var testDays = parseInt(document.getElementById('selT').value)||90;
+  var trend    = document.getElementById('selTr').value||'up';
 
-  // ─── Chart 1: Full series ───
-  var MAX_PTS = 300;
-  var fullData = trS.concat(teS);
-  var fullLabels = trD.concat(teD).map(fmtDate);
-  var nullTr = trS.map(function(){return null;});
-  var nullTe = teS.map(function(){return null;});
-  var propFull = nullTr.concat(pPreds);
-  var xgbFull  = nullTr.concat(xPreds);
-  var actFull  = nullTr.concat(teS);
-  var trainFull= trS.concat(nullTe);
+  log('Pipeline starting...','#556070');
+  log('noise='+noise+' test='+testDays+'d trend='+trend,'#00e5ff');
 
-  // subsample all to MAX_PTS
-  var step = Math.max(1, Math.floor(fullData.length / MAX_PTS));
-  var sIdx = [];
-  for (var i=0; i<fullData.length; i+=step) sIdx.push(i);
-  var sTrain=[],sActFull=[],sProp=[],sXgb=[],sLab=[];
-  for(var j=0;j<sIdx.length;j++){
-    var k=sIdx[j];
-    sTrain.push(trainFull[k]);sActFull.push(actFull[k]);
-    sProp.push(propFull[k]);sXgb.push(xgbFull[k]);
-    sLab.push(fullLabels[k]);
-  }
+  var gen=genData(noise,trend), dates=gen.dates, sales=gen.sales;
+  log('Dataset: '+dates.length+' rows');
 
-  var allVals=fullData;
-  var minV=Math.floor(arrMin(allVals)*0.95);
-  var maxV=Math.ceil(arrMax(allVals)*1.05);
+  var si=dates.length-testDays;
+  var trD=dates.slice(0,si), trS=sales.slice(0,si);
+  var teD=dates.slice(si),   teS=sales.slice(si);
+  log('Train:'+trD.length+' Test:'+teD.length,'#00e5ff');
+  log('Feature engineering: lag/rolling/calendar...','#556070');
 
-  var cv1=initCanvas('c1','box1',240);
-  var ctx1=cv1.ctx,W1=cv1.W,H1=cv1.H;
-  drawAxes(ctx1,W1,H1,PAD,minV,maxV,sLab,4);
-  var isTrNull=function(v){return v===null;};
-  drawLine(ctx1,sTrain,    sActFull.map(function(v){return v!==null;}), C.train,  1,    [],    W1,H1,PAD,minV,maxV);
-  drawLine(ctx1,sActFull,  sTrain.map(function(v){return v!==null;}),   C.actual, 2,    [],    W1,H1,PAD,minV,maxV);
-  drawLine(ctx1,sProp,     sTrain.map(function(v){return v!==null;}),   C.prophet,1.5,  [5,3], W1,H1,PAD,minV,maxV);
-  drawLine(ctx1,sXgb,      sTrain.map(function(v){return v!==null;}),   C.xgb,   1.5,  [2,3], W1,H1,PAD,minV,maxV);
+  log('Prophet fitting...','#ff4f6d');
+  var pP=prophetPred(trS,teD);
+  var pR=rmse(teS,pP), pM=mae(teS,pP);
+  log('Prophet RMSE:'+pR.toFixed(2)+' MAE:'+pM.toFixed(2));
 
-  // ─── Chart 2: Test period ───
-  var teLabels=teD.map(fmtDate);
-  var sTP=subPair(teS,teLabels,MAX_PTS);
-  var sPP=sub(pPreds,MAX_PTS),sXP=sub(xPreds,MAX_PTS);
-  var minT=Math.floor(Math.min(arrMin(teS),arrMin(pPreds),arrMin(xPreds))*0.95);
-  var maxT=Math.ceil(Math.max(arrMax(teS),arrMax(pPreds),arrMax(xPreds))*1.05);
+  log('XGBoost training...','#7cfc00');
+  var xP=xgbPred(trS,teD);
+  var xR=rmse(teS,xP), xM=mae(teS,xP);
+  log('XGBoost RMSE:'+xR.toFixed(2)+' MAE:'+xM.toFixed(2));
 
-  var cv2=initCanvas('c2','box2',200);
-  drawAxes(cv2.ctx,cv2.W,cv2.H,PAD,minT,maxT,sTP.l,4);
-  drawLine(cv2.ctx,sTP.v,null,C.actual,2,[],  cv2.W,cv2.H,PAD,minT,maxT);
-  drawLine(cv2.ctx,sPP,  null,C.prophet,1.5,[5,3],cv2.W,cv2.H,PAD,minT,maxT);
-  drawLine(cv2.ctx,sXP,  null,C.xgb,   1.5,[2,3],cv2.W,cv2.H,PAD,minT,maxT);
+  var win=xR<pR?'XGBoost':'Prophet';
+  log('Best: '+win,'#00e5ff');
 
-  // ─── Chart 3: Error bars ───
-  var pErr=teS.map(function(v,i){return Math.abs(v-pPreds[i]);});
-  var xErr=teS.map(function(v,i){return Math.abs(v-xPreds[i]);});
-  var sPE=sub(pErr,100),sXE=sub(xErr,100),sEL=subPair(pErr,teLabels,100).l;
+  // Update metric cards
+  document.getElementById('mTot').textContent=dates.length;
+  document.getElementById('mTr').textContent=trD.length;
+  document.getElementById('mTe').textContent=teD.length;
+  document.getElementById('mPr').textContent=pR.toFixed(1);
+  document.getElementById('mPm').textContent=pM.toFixed(1);
+  document.getElementById('mXr').textContent=xR.toFixed(1);
+  document.getElementById('mXm').textContent=xM.toFixed(1);
+  document.getElementById('btag').style.display=win==='XGBoost'?'inline-block':'none';
+
+  // ── CHART DRAWING ──
+  var PAD={t:10,b:24,l:40,r:8};
+  var SMAX=250; // max points to render
+
+  // labels
+  var allDates=trD.concat(teD).map(fmtD);
+  var teDates=teD.map(fmtD);
+
+  // full null arrays
+  var nTr=trS.map(function(){return null;});
+  var nTe=teS.map(function(){return null;});
+
+  // ── Chart 1: Full series ──
+  var c1=sizeCanvas('c1');
+  var full_tr=trS.concat(nTe), full_ac=nTr.concat(teS), full_pp=nTr.concat(pP), full_xp=nTr.concat(xP);
+  var s1=subWith([full_tr,full_ac,full_pp,full_xp],allDates,SMAX);
+  var allVals=trS.concat(teS);
+  var minV=Math.floor(arrMin(allVals)*.92), maxV=Math.ceil(arrMax(allVals)*1.08);
+  drawBase(c1.ctx,c1.W,c1.H,PAD,minV,maxV,s1.labels);
+  drawLine(c1.ctx,s1[0],s1[1].map(function(v){return v!==null;}), '#556070',1,  [],     PAD,c1.W,c1.H,minV,maxV);
+  drawLine(c1.ctx,s1[1],s1[0].map(function(v){return v!==null;}), '#00e5ff',2,  [],     PAD,c1.W,c1.H,minV,maxV);
+  drawLine(c1.ctx,s1[2],s1[0].map(function(v){return v!==null;}), '#ff4f6d',1.5,[5,3],  PAD,c1.W,c1.H,minV,maxV);
+  drawLine(c1.ctx,s1[3],s1[0].map(function(v){return v!==null;}), '#7cfc00',1.5,[2,3],  PAD,c1.W,c1.H,minV,maxV);
+
+  // ── Chart 2: Test zoom ──
+  var c2=sizeCanvas('c2');
+  var s2=subWith([teS,pP,xP],teDates,SMAX);
+  var min2=Math.floor(Math.min(arrMin(teS),arrMin(pP),arrMin(xP))*.93);
+  var max2=Math.ceil(Math.max(arrMax(teS),arrMax(pP),arrMax(xP))*1.07);
+  drawBase(c2.ctx,c2.W,c2.H,PAD,min2,max2,s2.labels);
+  drawLine(c2.ctx,s2[0],null,'#00e5ff',2,  [],   PAD,c2.W,c2.H,min2,max2);
+  drawLine(c2.ctx,s2[1],null,'#ff4f6d',1.5,[5,3],PAD,c2.W,c2.H,min2,max2);
+  drawLine(c2.ctx,s2[2],null,'#7cfc00',1.5,[2,3],PAD,c2.W,c2.H,min2,max2);
+
+  // ── Chart 3: Error bars ──
+  var c3=sizeCanvas('c3');
+  var pE=teS.map(function(v,i){return Math.abs(v-pP[i]);});
+  var xE=teS.map(function(v,i){return Math.abs(v-xP[i]);});
+  var s3=subWith([pE,xE],teDates,100);
+  var maxE=Math
