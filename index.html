@@ -12,237 +12,169 @@
   --border:#1a2a3a;--border2:#1f3348;
   --cyan:#00e5ff;--cyan2:#00b4cc;--cyan-dim:rgba(0,229,255,.12);
   --green:#00ff88;--green-dim:rgba(0,255,136,.1);
-  --red:#ff4d6d;--red-dim:rgba(255,77,109,.1);
-  --orange:#ffaa00;--orange-dim:rgba(255,170,0,.1);
-  --purple:#a855f7;--text:#c8d8e8;--muted:#4a6580;--light:#8aa8c0;
+  --red:#ff4d6d;--orange:#ffaa00;
+  --text:#c8d8e8;--muted:#4a6580;--light:#8aa8c0;
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
-/* ── HEADER ── */
 .header{
   background:linear-gradient(180deg,#0a1628 0%,var(--bg) 100%);
-  padding:20px 16px 16px;border-bottom:1px solid var(--border);
-  position:relative;overflow:hidden;
+  padding:20px 16px 16px;border-bottom:1px solid var(--border);position:relative;
 }
-.header::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-}
-.header-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
-.header-icon{font-size:22px;margin-top:2px;}
-.header-title{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;
-              color:var(--cyan);letter-spacing:-0.5px;line-height:1.2;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
+.header-title{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;
+              color:var(--cyan);letter-spacing:-0.5px;}
 .header-sub{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.3px;}
-.live-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--green-dim);border:1px solid rgba(0,255,136,.3);
-  color:var(--green);padding:5px 12px;border-radius:6px;
-  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
-  letter-spacing:.8px;margin-top:10px;
-}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);
-          animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-dim);
+  border:1px solid rgba(0,255,136,.3);color:var(--green);padding:5px 12px;border-radius:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.8px;margin-top:10px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-/* ── TAB BAR ── */
-.tabs{display:flex;gap:0;overflow-x:auto;padding:12px 16px 0;
-      scrollbar-width:none;border-bottom:1px solid var(--border);}
+/* TABS */
+.tabs{display:flex;overflow-x:auto;padding:0 16px;border-bottom:1px solid var(--border);scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{
-  display:flex;flex-direction:column;align-items:center;min-width:68px;
-  padding:8px 6px 10px;cursor:pointer;position:relative;
-  border-bottom:2px solid transparent;transition:all .2s;flex-shrink:0;
-}
+.tab{display:flex;flex-direction:column;align-items:center;min-width:65px;padding:10px 4px 10px;
+     cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;flex-shrink:0;}
 .tab.active{border-bottom-color:var(--cyan);}
 .tab-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;}
-.tab-icon{font-size:18px;margin-bottom:3px;}
-.tab-label{font-size:9px;color:var(--muted);text-align:center;letter-spacing:.2px;}
-.tab.active .tab-label{color:var(--cyan);}
-.tab.active .tab-num{color:var(--cyan);}
-.tab.done .tab-icon::after{content:'';display:block;width:6px;height:6px;
-  border-radius:50%;background:var(--green);position:absolute;top:6px;right:8px;}
+.tab-icon{font-size:17px;margin-bottom:3px;}
+.tab-lbl{font-size:9px;color:var(--muted);text-align:center;}
+.tab.active .tab-lbl,.tab.active .tab-num{color:var(--cyan);}
 
-/* ── CONTROLS ── */
+/* CONTROLS */
 .controls{padding:14px 16px;border-bottom:1px solid var(--border);
-          display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
-.ctrl-group{display:flex;flex-direction:column;gap:4px;}
-.ctrl-label{font-family:'JetBrains Mono',monospace;font-size:9px;
-            color:var(--muted);letter-spacing:.6px;text-transform:uppercase;}
-.ctrl-select{
-  background:var(--card);border:1px solid var(--border2);color:var(--text);
-  padding:7px 28px 7px 10px;border-radius:7px;font-size:12px;
-  font-family:'DM Sans',sans-serif;cursor:pointer;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a6580' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 8px center;
-}
-.ctrl-range{width:90px;accent-color:var(--cyan);}
-.ctrl-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);margin-left:4px;}
-.run-btn{
-  background:var(--cyan);color:#000;padding:10px 20px;border:none;border-radius:8px;
-  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
-  letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;gap:7px;
-  transition:all .15s;margin-left:auto;
-}
-.run-btn:hover{background:#33eeff;transform:translateY(-1px);}
+          display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;}
+.ctrl-group{display:flex;flex-direction:column;gap:5px;}
+.ctrl-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);
+          letter-spacing:.6px;text-transform:uppercase;}
+.ctrl-select{background:var(--card);border:1px solid var(--border2);color:var(--text);
+  padding:8px 28px 8px 10px;border-radius:7px;font-size:12px;cursor:pointer;
+  appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%234a6580' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;}
+.noise-row{display:flex;align-items:center;gap:6px;}
+.ctrl-range{width:80px;accent-color:var(--cyan);}
+.noise-val{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);min-width:24px;}
+.run-btn{background:var(--cyan);color:#000;padding:10px 18px;border:none;border-radius:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.5px;
+  cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;margin-left:auto;}
 .run-btn:active{transform:scale(.97);}
-.run-btn.running{background:var(--orange);color:#000;}
 
-/* ── STAT CARDS ── */
+/* PROGRESS */
+.prog-wrap{height:3px;background:var(--border);margin:0;}
+.prog-bar{height:3px;background:linear-gradient(90deg,var(--cyan2),var(--cyan));
+          width:0%;transition:width .3s ease;}
+
+/* STAT CARDS */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;}
-.stat-card.highlight{border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.05);}
-.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);
-          letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px;}
-.stat-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;
-          color:var(--cyan);line-height:1;}
-.stat-val.red{color:var(--red);}
-.stat-val.green{color:var(--green);}
-.stat-val.orange{color:var(--orange);}
-.stat-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+.s-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;}
+.s-card.hi{border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.04);}
+.s-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);
+       letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px;}
+.s-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--cyan);line-height:1;}
+.s-val.r{color:var(--red);}
+.s-val.g{color:var(--green);}
+.s-val.o{color:var(--orange);}
+.s-sub{font-size:10px;color:var(--muted);margin-top:4px;}
 
-/* ── SECTION ── */
-.section{padding:0 16px 16px;}
-.sec-title{
-  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
-  color:var(--cyan);letter-spacing:.8px;text-transform:uppercase;
-  margin-bottom:10px;display:flex;align-items:center;gap:8px;
-}
-.sec-num{background:var(--cyan);color:#000;padding:1px 7px;border-radius:4px;font-size:9px;}
+/* SECTION HEADERS */
+.sec{padding:0 16px 14px;}
+.sec-head{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--cyan);
+          letter-spacing:.8px;margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+.sec-num{background:var(--cyan);color:#000;padding:1px 7px;border-radius:4px;font-size:9px;font-weight:700;}
 
-/* ── CANVAS CHARTS ── */
-.chart-card{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:14px;margin-bottom:10px;
-}
-.chart-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--light);
-             margin-bottom:10px;letter-spacing:.3px;}
-.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);}
-.legend-dot{width:8px;height:8px;border-radius:50%;}
-.legend-line{width:16px;height:2px;border-radius:2px;}
-canvas{width:100%;border-radius:6px;}
+/* CHART CARDS */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+            padding:12px;margin-bottom:12px;}
+.chart-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
-/* ── MODEL COMPARISON BARS ── */
-.model-bars{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
-.model-row{display:flex;flex-direction:column;gap:3px;}
-.model-name{font-size:11px;color:var(--text);display:flex;justify-content:space-between;}
-.model-name span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);}
+/* SVG charts fill full width */
+.chart-svg{width:100%;display:block;border-radius:6px;}
+
+/* MODEL BARS */
+.m-bars{display:flex;flex-direction:column;gap:10px;}
+.m-row{display:flex;flex-direction:column;gap:4px;}
+.m-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text);}
+.m-label span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--light);}
 .bar-track{background:rgba(255,255,255,.06);border-radius:4px;height:10px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1);}
+.bar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);width:0;}
 
-/* ── FEAT IMPORTANCE ── */
-.feat-rows{display:flex;flex-direction:column;gap:7px;margin-top:4px;}
+/* FEATURE BARS */
+.feat-rows{display:flex;flex-direction:column;gap:6px;}
 .feat-row{display:flex;align-items:center;gap:8px;}
 .feat-name{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);
            min-width:52px;text-align:right;}
-.feat-track{flex:1;background:rgba(255,255,255,.06);border-radius:3px;height:12px;overflow:hidden;}
-.feat-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cyan2),var(--cyan));}
-.feat-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);min-width:34px;}
+.feat-track{flex:1;background:rgba(255,255,255,.06);border-radius:3px;height:11px;overflow:hidden;}
+.feat-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cyan2),var(--cyan));
+           transition:width 1.2s cubic-bezier(.4,0,.2,1);width:0;}
+.feat-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);min-width:32px;}
 
-/* ── TAB PANELS ── */
-.panel{display:none;animation:fadeIn .25s ease;}
-.panel.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+/* PANELS */
+.panel{display:none;}
+.panel.active{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:none;}}
 
-/* ── INFO CARDS ── */
-.info-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;
-           padding:13px;margin-bottom:9px;}
-.info-card h4{font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:7px;}
-.info-card p{font-size:12px;color:var(--light);line-height:1.7;}
-.info-card ul{list-style:none;display:flex;flex-direction:column;gap:5px;margin-top:6px;}
-.info-card ul li{font-size:11.5px;color:var(--text);display:flex;gap:7px;align-items:flex-start;line-height:1.5;}
-.info-card ul li::before{content:'>';color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;margin-top:1px;}
-.chip{display:inline;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);
-      color:var(--cyan);padding:1px 6px;border-radius:4px;
-      font-family:'JetBrains Mono',monospace;font-size:10px;}
-.badge-green{display:inline-flex;align-items:center;gap:5px;background:var(--green-dim);
-             border:1px solid rgba(0,255,136,.25);color:var(--green);
-             padding:4px 10px;border-radius:7px;font-size:11px;font-weight:600;margin-top:8px;}
-.badge-blue{display:inline-flex;align-items:center;gap:5px;background:var(--cyan-dim);
-            border:1px solid rgba(0,229,255,.25);color:var(--cyan);
-            padding:4px 10px;border-radius:7px;font-size:11px;font-weight:600;margin-top:8px;}
+.info-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:13px;margin-bottom:9px;}
+.info-card h4{font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:8px;}
+.info-card p{font-size:12px;color:var(--light);line-height:1.7;margin-bottom:6px;}
+.info-card ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.info-card li{font-size:11.5px;color:var(--text);display:flex;gap:7px;line-height:1.5;}
+.info-card li::before{content:'>';color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:11px;flex-shrink:0;margin-top:1px;}
+.chip{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);color:var(--cyan);
+      padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;}
+.badge-g{display:inline-flex;align-items:center;gap:5px;background:var(--green-dim);
+         border:1px solid rgba(0,255,136,.25);color:var(--green);padding:4px 10px;
+         border-radius:7px;font-size:11px;font-weight:600;margin-top:8px;}
+.badge-b{display:inline-flex;align-items:center;gap:5px;background:var(--cyan-dim);
+         border:1px solid rgba(0,229,255,.25);color:var(--cyan);padding:4px 10px;
+         border-radius:7px;font-size:11px;font-weight:600;margin-top:8px;}
 
-/* ── METRICS TABLE ── */
-.metrics-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
-.metrics-tbl th{background:rgba(0,229,255,.1);color:var(--cyan);padding:7px 8px;
-                text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.4px;}
-.metrics-tbl td{padding:7px 8px;border-top:1px solid var(--border);color:var(--text);}
-.metrics-tbl tr.best td{color:var(--cyan);}
-.best-tag{background:rgba(0,229,255,.15);color:var(--cyan);padding:1px 6px;
-          border-radius:4px;font-size:9px;font-family:'JetBrains Mono',monospace;}
+/* METRICS TABLE */
+.m-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
+.m-tbl th{background:rgba(0,229,255,.1);color:var(--cyan);padding:7px 8px;text-align:left;
+          font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.4px;}
+.m-tbl td{padding:7px 8px;border-top:1px solid var(--border);color:var(--text);}
+.m-tbl tr.best td{color:var(--cyan);}
+.best-tag{background:rgba(0,229,255,.15);color:var(--cyan);padding:1px 6px;border-radius:4px;
+          font-size:9px;font-family:'JetBrains Mono',monospace;}
 
-/* ── PROGRESS BAR ── */
-.progress-wrap{background:var(--border);border-radius:4px;height:3px;margin:10px 0;overflow:hidden;}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan));
-              border-radius:4px;transition:width .4s ease;width:0;}
-
-/* ── FOOTER ── */
 .footer{text-align:center;padding:20px;color:var(--muted);font-size:10px;
-        border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;
-        letter-spacing:.3px;margin-top:8px;}
+        border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;margin-top:6px;}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-top">
-    <div class="header-icon">&#128200;</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-size:22px;">&#128200;</span>
     <div>
       <div class="header-title">Sales Forecasting System</div>
-      <div class="header-sub">Time-series &middot; Prophet &amp; XGBoost &middot; Feature Engineering &middot; RMSE / MAE</div>
+      <div class="header-sub">Time-series &nbsp;&middot;&nbsp; Prophet &amp; XGBoost &nbsp;&middot;&nbsp; Feature Engineering &nbsp;&middot;&nbsp; RMSE / MAE</div>
     </div>
   </div>
-  <div class="live-badge">
-    <div class="live-dot"></div>
-    LIVE SIMULATION
-  </div>
+  <div class="live-badge"><div class="live-dot"></div>LIVE SIMULATION</div>
 </div>
 
-<!-- TAB BAR -->
-<div class="tabs" id="tabBar">
-  <div class="tab active" onclick="switchTab(0)">
-    <div class="tab-num">01</div>
-    <div class="tab-icon">&#128196;</div>
-    <div class="tab-label">Dataset</div>
-  </div>
-  <div class="tab" onclick="switchTab(1)">
-    <div class="tab-num">02</div>
-    <div class="tab-icon">&#129529;</div>
-    <div class="tab-label">Preprocess</div>
-  </div>
-  <div class="tab" onclick="switchTab(2)">
-    <div class="tab-num">03</div>
-    <div class="tab-icon">&#9881;</div>
-    <div class="tab-label">Features</div>
-  </div>
-  <div class="tab" onclick="switchTab(3)">
-    <div class="tab-num">04</div>
-    <div class="tab-icon">&#9986;</div>
-    <div class="tab-label">Train/Test</div>
-  </div>
-  <div class="tab" onclick="switchTab(4)">
-    <div class="tab-num">05</div>
-    <div class="tab-icon">&#128302;</div>
-    <div class="tab-label">Prophet</div>
-  </div>
-  <div class="tab" onclick="switchTab(5)">
-    <div class="tab-num">06</div>
-    <div class="tab-icon">&#128200;</div>
-    <div class="tab-label">XGBoost</div>
-  </div>
-  <div class="tab" onclick="switchTab(6)">
-    <div class="tab-num">07</div>
-    <div class="tab-icon">&#128202;</div>
-    <div class="tab-label">Evaluate</div>
-  </div>
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)"><div class="tab-num">01</div><div class="tab-icon">&#128196;</div><div class="tab-lbl">Dataset</div></div>
+  <div class="tab" onclick="switchTab(1)"><div class="tab-num">02</div><div class="tab-icon">&#129529;</div><div class="tab-lbl">Preprocess</div></div>
+  <div class="tab" onclick="switchTab(2)"><div class="tab-num">03</div><div class="tab-icon">&#9881;</div><div class="tab-lbl">Features</div></div>
+  <div class="tab" onclick="switchTab(3)"><div class="tab-num">04</div><div class="tab-icon">&#9986;</div><div class="tab-lbl">Train/Test</div></div>
+  <div class="tab" onclick="switchTab(4)"><div class="tab-num">05</div><div class="tab-icon">&#128302;</div><div class="tab-lbl">Prophet</div></div>
+  <div class="tab" onclick="switchTab(5)"><div class="tab-num">06</div><div class="tab-icon">&#128200;</div><div class="tab-lbl">XGBoost</div></div>
+  <div class="tab" onclick="switchTab(6)"><div class="tab-num">07</div><div class="tab-icon">&#128202;</div><div class="tab-lbl">Evaluate</div></div>
 </div>
 
 <!-- CONTROLS -->
 <div class="controls">
   <div class="ctrl-group">
-    <div class="ctrl-label">TEST PERIOD</div>
-    <select class="ctrl-select" id="testPeriod" onchange="updateParams()">
+    <div class="ctrl-lbl">TEST PERIOD</div>
+    <select class="ctrl-select" id="testPeriod">
       <option value="60">60 days</option>
       <option value="90" selected>90 days</option>
       <option value="180">180 days</option>
@@ -250,8 +182,8 @@ canvas{width:100%;border-radius:6px;}
     </select>
   </div>
   <div class="ctrl-group">
-    <div class="ctrl-label">TREND</div>
-    <select class="ctrl-select" id="trendType" onchange="updateParams()">
+    <div class="ctrl-lbl">TREND</div>
+    <select class="ctrl-select" id="trendType">
       <option value="up" selected>Upward</option>
       <option value="flat">Flat</option>
       <option value="down">Downward</option>
@@ -259,148 +191,143 @@ canvas{width:100%;border-radius:6px;}
     </select>
   </div>
   <div class="ctrl-group">
-    <div class="ctrl-label">NOISE LEVEL <span class="ctrl-val" id="noiseVal">50</span></div>
-    <input type="range" class="ctrl-range" id="noiseLevel"
-           min="10" max="100" value="50"
-           oninput="document.getElementById('noiseVal').textContent=this.value">
+    <div class="ctrl-lbl">NOISE LEVEL &nbsp;<span id="noiseVal" style="color:var(--cyan);font-family:'JetBrains Mono',monospace;">50</span></div>
+    <div class="noise-row">
+      <input type="range" class="ctrl-range" id="noiseLevel" min="10" max="100" value="50"
+             oninput="document.getElementById('noiseVal').textContent=this.value">
+    </div>
   </div>
-  <button class="run-btn" id="runBtn" onclick="runPipeline()">
-    &#9654; RUN PIPELINE
-  </button>
+  <button class="run-btn" id="runBtn" onclick="runPipeline()">&#9654; RUN PIPELINE</button>
 </div>
 
 <!-- PROGRESS -->
-<div style="padding:0 16px;">
-  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
-</div>
+<div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
 
-<!-- STATS GRID -->
+<!-- STAT CARDS -->
 <div class="stats-grid">
-  <div class="stat-card highlight">
-    <div class="stat-lbl">DATA POINTS</div>
-    <div class="stat-val" id="statTotal">--</div>
-    <div class="stat-sub">3-year daily</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-lbl">TRAIN SIZE</div>
-    <div class="stat-val" id="statTrain">--</div>
-    <div class="stat-sub">rows</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-lbl">TEST SIZE</div>
-    <div class="stat-val" id="statTest">--</div>
-    <div class="stat-sub">rows</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-lbl">PROPHET RMSE</div>
-    <div class="stat-val red" id="statProphet">--</div>
-    <div class="stat-sub">MAE: <span id="statProphetMAE">--</span></div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-lbl">XGBOOST RMSE</div>
-    <div class="stat-val green" id="statXGB">--</div>
-    <div class="stat-sub">MAE: <span id="statXGBMAE">--</span></div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-lbl">BEST MODEL</div>
-    <div class="stat-val orange" id="statBest">--</div>
-    <div class="stat-sub" id="statBestSub">--</div>
-  </div>
+  <div class="s-card hi"><div class="s-lbl">DATA POINTS</div><div class="s-val" id="sTotal">--</div><div class="s-sub">3-year daily</div></div>
+  <div class="s-card"><div class="s-lbl">TRAIN SIZE</div><div class="s-val" id="sTrain">--</div><div class="s-sub">rows</div></div>
+  <div class="s-card"><div class="s-lbl">TEST SIZE</div><div class="s-val" id="sTest">--</div><div class="s-sub">rows</div></div>
+  <div class="s-card"><div class="s-lbl">PROPHET RMSE</div><div class="s-val r" id="sPropRMSE">--</div><div class="s-sub">MAE: <span id="sPropMAE">--</span></div></div>
+  <div class="s-card"><div class="s-lbl">XGBOOST RMSE</div><div class="s-val g" id="sXGBRMSE">--</div><div class="s-sub">MAE: <span id="sXGBMAE">--</span></div></div>
+  <div class="s-card"><div class="s-lbl">BEST MODEL</div><div class="s-val o" id="sBest">--</div><div class="s-sub" id="sBestSub">--</div></div>
 </div>
 
-<!-- ── CHART SECTION ── -->
-<div class="section">
-  <div class="sec-title"><span class="sec-num">01</span> FULL TIME-SERIES + FORECAST</div>
+<!-- CHARTS SECTION -->
+<div class="sec">
+
+  <div class="sec-head"><span class="sec-num">01</span> FULL TIME-SERIES + FORECAST</div>
   <div class="chart-card">
     <div class="chart-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#4a6580"></div>Train</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Actual</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Prophet</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>XGBoost</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#2a4060"></div>Train</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#00e5ff"></div>Actual</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ff4d6d"></div>Prophet</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#00ff88"></div>XGBoost</div>
     </div>
-    <canvas id="chart1" height="160"></canvas>
+    <svg id="svg1" class="chart-svg" viewBox="0 0 400 160" preserveAspectRatio="none"
+         style="height:160px;background:#111c2a;border-radius:6px;">
+      <text x="200" y="85" text-anchor="middle" fill="#2a4060"
+            font-family="JetBrains Mono,monospace" font-size="11">Click RUN PIPELINE to load chart</text>
+    </svg>
   </div>
 
-  <div class="sec-title"><span class="sec-num">02</span> ACTUAL VS PREDICTED (TEST)</div>
+  <div class="sec-head"><span class="sec-num">02</span> ACTUAL VS PREDICTED (TEST)</div>
   <div class="chart-card">
-    <canvas id="chart2" height="140"></canvas>
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#00e5ff"></div>Actual</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ff4d6d"></div>Prophet</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#00ff88"></div>XGBoost</div>
+    </div>
+    <svg id="svg2" class="chart-svg" viewBox="0 0 400 130" preserveAspectRatio="none"
+         style="height:130px;background:#111c2a;border-radius:6px;">
+      <text x="200" y="70" text-anchor="middle" fill="#2a4060"
+            font-family="JetBrains Mono,monospace" font-size="11">Run pipeline to see predictions</text>
+    </svg>
   </div>
 
-  <div class="sec-title"><span class="sec-num">03</span> DAILY ABSOLUTE ERROR</div>
+  <div class="sec-head"><span class="sec-num">03</span> DAILY ABSOLUTE ERROR</div>
   <div class="chart-card">
-    <canvas id="chart3" height="110"></canvas>
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#ff4d6d"></div>Prophet Error</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#00ff88"></div>XGBoost Error</div>
+    </div>
+    <svg id="svg3" class="chart-svg" viewBox="0 0 400 110" preserveAspectRatio="none"
+         style="height:110px;background:#111c2a;border-radius:6px;">
+      <text x="200" y="60" text-anchor="middle" fill="#2a4060"
+            font-family="JetBrains Mono,monospace" font-size="11">Error chart loads after run</text>
+    </svg>
   </div>
 
-  <div class="sec-title"><span class="sec-num">04</span> RMSE &amp; MAE COMPARISON</div>
+  <div class="sec-head"><span class="sec-num">04</span> RMSE &amp; MAE COMPARISON</div>
   <div class="chart-card">
-    <div class="model-bars" id="modelBars">
-      <div class="model-row">
-        <div class="model-name">Prophet RMSE <span id="bar1v">--</span></div>
-        <div class="bar-track"><div class="bar-fill" id="bar1" style="background:var(--red);width:0%"></div></div>
+    <div class="m-bars">
+      <div class="m-row">
+        <div class="m-label">Prophet RMSE <span id="bv1">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bf1" style="background:var(--red);"></div></div>
       </div>
-      <div class="model-row">
-        <div class="model-name">XGBoost RMSE <span id="bar2v">--</span></div>
-        <div class="bar-track"><div class="bar-fill" id="bar2" style="background:var(--green);width:0%"></div></div>
+      <div class="m-row">
+        <div class="m-label">XGBoost RMSE <span id="bv2">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bf2" style="background:var(--green);"></div></div>
       </div>
-      <div class="model-row">
-        <div class="model-name">Prophet MAE <span id="bar3v">--</span></div>
-        <div class="bar-track"><div class="bar-fill" id="bar3" style="background:#ff7b9c;width:0%"></div></div>
+      <div class="m-row">
+        <div class="m-label">Prophet MAE <span id="bv3">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bf3" style="background:#ff7b9c;"></div></div>
       </div>
-      <div class="model-row">
-        <div class="model-name">XGBoost MAE <span id="bar4v">--</span></div>
-        <div class="bar-track"><div class="bar-fill" id="bar4" style="background:#66ffb2;width:0%"></div></div>
+      <div class="m-row">
+        <div class="m-label">XGBoost MAE <span id="bv4">--</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bf4" style="background:#66ffb2;"></div></div>
       </div>
     </div>
   </div>
 
-  <div class="sec-title"><span class="sec-num">05</span> XGBOOST FEATURE IMPORTANCE</div>
+  <div class="sec-head"><span class="sec-num">05</span> XGBOOST FEATURE IMPORTANCE</div>
   <div class="chart-card">
     <div class="feat-rows" id="featRows">
-      <div style="color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;">Run pipeline to see feature importance...</div>
+      <div style="color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;text-align:center;padding:10px 0;">
+        Run pipeline to see feature importance...
+      </div>
     </div>
   </div>
+
 </div>
 
-<!-- ── TAB PANELS ── -->
-<div style="padding:0 16px 16px;" id="tabPanels">
+<!-- TAB PANELS -->
+<div style="padding:0 16px 16px;">
 
-  <!-- Panel 0: Dataset -->
-  <div class="panel active" id="panel0">
+  <div class="panel active" id="p0">
     <div class="info-card">
       <h4>&#128196; Dataset Overview</h4>
-      <p>Historical daily sales data used to train time-series forecasting models.</p>
+      <p>Historical daily sales data used to train time-series forecasting models for business planning.</p>
       <ul>
-        <li>Date range: <strong>3 years of daily data</strong></li>
-        <li>Frequency: Daily (365 rows/year)</li>
+        <li>Date range: <strong>3 years of daily data</strong> (2019&ndash;2023)</li>
+        <li>Frequency: Daily &mdash; 365 rows per year</li>
         <li>Target column: <span class="chip">sales</span></li>
-        <li>Load with <span class="chip">pd.read_csv('sales.csv', parse_dates=['date'])</span></li>
-        <li>Check missing values: <span class="chip">df.isnull().sum()</span></li>
+        <li>Load: <span class="chip">pd.read_csv('sales.csv', parse_dates=['date'])</span></li>
+        <li>Check nulls: <span class="chip">df.isnull().sum()</span></li>
         <li>View stats: <span class="chip">df['sales'].describe()</span></li>
       </ul>
-      <div class="badge-green">&#10003; Dataset loaded &mdash; <span id="p0rows">run pipeline</span></div>
+      <div class="badge-g">&#10003; Dataset loaded &mdash; <span id="p0rows">run pipeline first</span></div>
     </div>
   </div>
 
-  <!-- Panel 1: Preprocess -->
-  <div class="panel" id="panel1">
+  <div class="panel" id="p1">
     <div class="info-card">
       <h4>&#129529; Preprocessing</h4>
-      <p>Clean missing values and cap outliers before feature extraction.</p>
+      <p>Fill missing date gaps and cap outlier spikes before feature creation.</p>
       <ul>
-        <li>Reindex to daily frequency: <span class="chip">asfreq('D')</span></li>
+        <li>Reindex to daily: <span class="chip">asfreq('D')</span></li>
         <li>Fill gaps: <span class="chip">interpolate(method='time')</span></li>
-        <li>IQR outlier detection: Q1 &minus; 1.5&times;IQR &rarr; Q3 + 1.5&times;IQR</li>
-        <li>Winsorise (clip) extreme spikes</li>
+        <li>IQR bounds: Q1 &minus; 1.5&times;IQR &rarr; Q3 + 1.5&times;IQR</li>
+        <li>Winsorise extreme spikes &mdash; clip not drop</li>
         <li>Final missing count: <strong>0</strong></li>
       </ul>
-      <div class="badge-green">&#10003; Data cleaned &mdash; 0 missing values</div>
+      <div class="badge-g">&#10003; Data cleaned &mdash; 0 missing values</div>
     </div>
   </div>
 
-  <!-- Panel 2: Features -->
-  <div class="panel" id="panel2">
+  <div class="panel" id="p2">
     <div class="info-card">
-      <h4>&#9881; Feature Engineering (23 features)</h4>
+      <h4>&#9881; Feature Engineering &mdash; 23 Features</h4>
       <ul>
         <li><strong>Calendar:</strong> year, month, day, quarter, week_of_year, doy</li>
         <li><strong>Flags:</strong> is_weekend, is_month_end, is_month_start</li>
@@ -409,27 +336,29 @@ canvas{width:100%;border-radius:6px;}
         <li><strong>Rolling mean:</strong> <span class="chip">rm_7</span> <span class="chip">rm_14</span> <span class="chip">rm_30</span></li>
         <li><strong>Rolling std:</strong> <span class="chip">rs_7</span> <span class="chip">rs_14</span> <span class="chip">rs_30</span></li>
       </ul>
-      <div class="badge-blue">&#9881; 23 features created</div>
+      <div class="badge-b">&#9881; 23 features created</div>
     </div>
   </div>
 
-  <!-- Panel 3: Train/Test -->
-  <div class="panel" id="panel3">
+  <div class="panel" id="p3">
     <div class="info-card">
       <h4>&#9986; Chronological Train / Test Split</h4>
       <p>Split in time order &mdash; no random shuffle &mdash; no data leakage.</p>
       <ul>
-        <li>Sort by date ascending</li>
-        <li>Train: first 80% of rows</li>
-        <li>Test: last 20% of rows (unseen future)</li>
-        <li>Scale: <span class="chip">StandardScaler</span> fit on train only</li>
-        <li>Test = <span id="p3test">--</span> rows &mdash; <span id="p3days">--</span> day window</li>
+        <li>Sort by date ascending &mdash; strict chronological order</li>
+        <li>Train: first 80% of rows (2019&ndash;2022)</li>
+        <li>Test: last 20% of rows &mdash; unseen future data</li>
+        <li>Scale: <span class="chip">StandardScaler</span> fit on train only, apply to test</li>
+        <li>Test window: <span id="p3days">--</span> days selected</li>
       </ul>
-      <div class="badge-green">&#10003; Split done &mdash; zero leakage</div>
+      <div class="badge-g">&#10003; Split done &mdash; zero data leakage</div>
     </div>
   </div>
 
-  <!-- Panel 4: Prophet -->
-  <div class="panel" id="panel4">
+  <div class="panel" id="p4">
     <div class="info-card">
-      <h4>&
+      <h4>&#128302; Facebook Prophet</h4>
+      <p>Additive model that handles seasonality and holiday effects automatically.</p>
+      <ul>
+        <li>Trend + weekly seasonality + yearly seasonality</li>
+        <li>Input format: <span class="chip">ds</span> (date) + <span class="chip">y</span> (sales)</
